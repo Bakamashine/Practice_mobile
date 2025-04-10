@@ -1,5 +1,4 @@
 import { View, Text } from "react-native";
-import Test from "./test";
 
 
 const HomePage = () => {
