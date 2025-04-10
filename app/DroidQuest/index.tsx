@@ -4,11 +4,14 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   ScrollView,
 } from "react-native";
 import { fabric } from "./droidquest.service";
+import { log } from "@/configs/logger";
 
+/**
+ * Общий массив с вопросами (каждый вопрос собирает фабрика)
+ */
 const questions = [
   fabric("Android является операционной системой?", true),
   fabric(
@@ -21,26 +24,59 @@ const questions = [
 ];
 
 const App = () => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // index
-  const [score, setScore] = useState(0); // result
-  const [quizFinished, setQuizFinished] = useState(false); // переменная для проверки решённого теста
+  
+  /**
+   * Определяет порядок вопроса
+   * @default 0
+   */
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  
+  /**
+   * Подсчёт очков пользователя
+   * @default 0
+   */
+  const [score, setScore] = useState(0); 
+  
+  /**
+   * Переменная для проверки решённого теста
+   * @default false
+   */
+  const [quizFinished, setQuizFinished] = useState(false);
+  
+  /**
+   * Правильность ответа
+   * @default false
+   */
   const [status, setStatus] = useState(false);
 
+  /**
+   * Сравнивает полученный ответ с ответом, который указан в Object в котором находится вопрос
+   * @param userAnswer Ответ пользователя
+   */
   const handleAnswer = (userAnswer: boolean) => {
     if (userAnswer === questions[currentQuestionIndex].answer) {
       setStatus(true);
       setScore(score + 1);
+      log.info(
+        `Пользователь ответил правильно на вопрос: ${questions[currentQuestionIndex].question}`
+      );
     } else {
-      setStatus(false)
+      setStatus(false);
     }
-    
+
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       setQuizFinished(true);
+      log.info(
+        `Пользователь завершил тест с результатом: ${score} из ${questions.length}`
+      );
     }
   };
 
+  /**
+   * Если истинно, то будет вывод полученных очков и предложение повторить тест
+   */
   if (quizFinished) {
     return (
       <View style={styles.container}>
@@ -53,6 +89,7 @@ const App = () => {
             setCurrentQuestionIndex(0);
             setQuizFinished(false);
             setScore(0);
+            log.info("Тест начали с начала");
           }}
         >
           <Text>Пройти снова</Text>
@@ -85,6 +122,7 @@ const App = () => {
           onPress={() => {
             setCurrentQuestionIndex(currentQuestionIndex - 1);
 
+            log.info("Пользователь вернулся на вопрос назад");
             if (status) {
               setScore(score - 1);
             }
@@ -95,8 +133,6 @@ const App = () => {
       ) : (
         <Text></Text>
       )}
-      {/* <Text>Ваш результат: {score}</Text>
-      <Text>Статус ответа: {status.toString()}</Text> */}
     </ScrollView>
   );
 };
