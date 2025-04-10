@@ -23,6 +23,9 @@ const questions = [
   fabric("Android поддерживает многозадачность?", true),
 ];
 
+const test = () => {
+  log.info("test")
+}
 const App = () => {
   
   /**
@@ -54,7 +57,8 @@ const App = () => {
    * @param userAnswer Ответ пользователя
    */
   const handleAnswer = (userAnswer: boolean) => {
-    if (userAnswer === questions[currentQuestionIndex].answer) {
+    let result = userAnswer === questions[currentQuestionIndex].answer;
+    if (result) {
       setStatus(true);
       setScore(score + 1);
       log.info(
@@ -63,13 +67,13 @@ const App = () => {
     } else {
       setStatus(false);
     }
-
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
+    let finalScore = score + (result ? 1 : 0)
       setQuizFinished(true);
       log.info(
-        `Пользователь завершил тест с результатом: ${score} из ${questions.length}`
+        `Пользователь завершил тест с результатом: ${finalScore} из ${questions.length}`
       );
     }
   };
