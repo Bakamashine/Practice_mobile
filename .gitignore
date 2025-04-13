@@ -35,4 +35,17 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# vscode
+.vscode
+
+# key
+key.txt
+
+# dirs
+УП\ 05.01\ отчёт\ +\ приложение/
+
+# vim
+*.swp
+
+*.bak
 app-example
