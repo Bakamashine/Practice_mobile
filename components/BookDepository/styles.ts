@@ -19,6 +19,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 5,
   },
+  h1: {
+    textAlign: 'center',
+    fontSize: 30,
+    fontWeight: 'bold'
+  },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    // backgroundColor: "#fff",
+  },
 });
 
 export default styles;

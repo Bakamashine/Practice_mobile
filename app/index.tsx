@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 30,
     fontWeight: 'bold'
-
   },
   container: {
     flex: 1,
