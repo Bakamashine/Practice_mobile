@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     width: "40%",
     alignItems: "center",
     borderRadius: 5,
+    // textAlign: 'center',
   },
   h1: {
     textAlign: 'center',

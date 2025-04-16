@@ -2,14 +2,13 @@ import React from "react";
 import {
   View,
   TextInput,
-  Text,
-  TouchableOpacity,
   StyleSheet,
 } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import styles from "@/components/BookDepository/styles";
 import BookDeposButton from "@/components/ui/BookDeposButton";
 import { storeData } from "@/components/BookDepository/BookDepository.service";
+import { router } from "expo-router";
 
 function add() {
   /**
@@ -24,10 +23,6 @@ function add() {
    */
   const [name, setName] = React.useState("");
 
-  React.useEffect(() => {
-    console.log(`Debug: '${name}'`);
-  }, [name]);
-
   return (
     <View>
       <TextInput
@@ -35,11 +30,17 @@ function add() {
         placeholder="Введите название книги."
         onChangeText={(value) => setName(value)}
       ></TextInput>
-      <View style={[styles.center, add_style.flex]}>
+      <View style={[styles.center]}>
         <BookDeposButton
-          text={Date()}
+          text={`Добавить новую книгу`}
           func={() => {
-            storeData({ name: name, date: new Date(), id: 0, status: check });
+            storeData({
+              name: name,
+              id: 0,
+              date: Date(),
+              status: check,
+            });
+            router.replace("/BookDepository");
           }}
         />
         <BouncyCheckbox
@@ -47,6 +48,10 @@ function add() {
           onPress={(isChecked: boolean) => setCheck(isChecked)}
           size={25}
           text="Прочтена?"
+        />
+        <BookDeposButton
+          text="Назад"
+          func={() => router.replace("/BookDepository")}
         />
       </View>
     </View>
@@ -56,7 +61,4 @@ function add() {
 export default add;
 
 const add_style = StyleSheet.create({
-  flex: {
-    flex: 1,
-  },
 });
