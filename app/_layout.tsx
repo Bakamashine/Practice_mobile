@@ -3,19 +3,26 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Drawer } from "expo-router/drawer";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Stack } from "expo-router";
+import CustomDrawerComponents from "@/components/CustomDrawerComponents";
 
 // const Stack = createNativeStackNavigator();
 function Layout() {
   return (
     <GestureHandlerRootView>
-      <Drawer>
+      <Drawer drawerContent={CustomDrawerComponents}>
         <Drawer.Screen name="index" options={{
-          drawerLabel: 'Home',
-          headerTitle: 'Home',
+          // drawerLabel: 'Home',
+          headerTitle: 'Главная',
         }} />
         <Drawer.Screen name="DroidQuest/index" options={{
-          drawerLabel: "DroidQuest",
+          // drawerLabel: "DroidQuest",
           headerTitle: 'DroidQuest',
+        }} />
+        
+        <Drawer.Screen name="BookDepository/index" options={{
+          drawerLabel: "BookDepository",
+          headerTitle: "BookDepository",
+          // headerBackground:  () => null
         }} />
         
         {/* {false ||
