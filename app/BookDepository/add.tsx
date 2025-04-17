@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  View,
-  TextInput,
-  StyleSheet,
-} from "react-native";
+import { View, TextInput, StyleSheet } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import styles from "@/components/BookDepository/styles";
 import BookDeposButton from "@/components/ui/BookDeposButton";
@@ -23,6 +19,35 @@ function add() {
    */
   const [name, setName] = React.useState("");
 
+  function date_to_day() {
+    let date = new Date();
+    let week = [
+      "Воскресенье",
+      "Понедельник",
+      "Вторник",
+      "Среда",
+      "Четверг",
+      "Пятница",
+      "Суббота",
+    ];
+    
+    let mounth =[
+      "Январь",
+      "Февраль",
+      "Март",
+      "Апрель",
+      "Май",
+      "Июнь",
+      "Июль",
+      "Август",
+      "Сентябрь",
+      "Октябрь",
+      "Ноябрь",
+      "Декабрь"
+    ]
+    return `${week[date.getDay()]}, ${date.getDate()} ${mounth[date.getMonth()]} ${date.getFullYear()} г.`;
+  }
+
   return (
     <View>
       <TextInput
@@ -37,7 +62,7 @@ function add() {
             storeData({
               name: name,
               id: 0,
-              date: Date(),
+              date: date_to_day(),
               status: check,
             });
             router.replace("/BookDepository");
@@ -60,5 +85,4 @@ function add() {
 
 export default add;
 
-const add_style = StyleSheet.create({
-});
+const add_style = StyleSheet.create({});
