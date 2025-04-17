@@ -17,7 +17,6 @@ import {
 } from "@/components/BookDepository/BookDepository.service";
 import { useFocusEffect } from "expo-router";
 import { log } from "@/configs/logger";
-import { useIsFocused } from "@react-navigation/native";
 
 export interface books {
   id: number;
@@ -27,8 +26,24 @@ export interface books {
 }
 
 function BookDepository() {
+  
+  /**
+   * Массив в который передаётся информация о книгах
+   * из AsyncStorage
+   * @default []
+   */
   const [array, setArray] = useState<books[]>([]);
+  
+  /**
+   * Статус прогрузки страницы
+   * @default true
+   */
   const [loading, setLoading] = useState<boolean>(true);
+  
+  /**
+   * Статус перезагрузки для FlatList (RefreshControll)
+   * @default false
+   */
   const [refreshing, setRefreshing] = useState(false);
   /**
    * Получение данных
@@ -69,11 +84,6 @@ function BookDepository() {
             router.replace("/BookDepository/add");
           }}
         />
-
-        {/* <BookDeposButton
-          text="Если же вы добавили книгу, пожалуйста, перезагрузите страницу"
-          func={fetchData}
-        /> */}
       </View>
     );
   } else {

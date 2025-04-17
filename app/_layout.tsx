@@ -5,7 +5,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Stack } from "expo-router";
 import CustomDrawerComponents from "@/components/CustomDrawerComponents";
 
-// const Stack = createNativeStackNavigator();
 function Layout() {
   return (
     <GestureHandlerRootView>
