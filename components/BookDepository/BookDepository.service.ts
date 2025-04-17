@@ -68,7 +68,7 @@ export const storeData = async (value: string | books) => {
 export const getData = async () => {
   try {
     const value = await AsyncStorage.getItem("books");
-    log.debug(`(getData): Полученные данные ${JSON.stringify(value)}`);
+    log.debug(`(getData): Полученные данные: ${JSON.stringify(value)}`);
     if (value !== null) {
       return value;
     } else {
