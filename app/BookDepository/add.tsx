@@ -65,7 +65,11 @@ function add() {
               date: date_to_day(),
               status: check,
             });
-            router.replace("/BookDepository");
+            // router.replace("/BookDepository");
+            router.push({
+              pathname:"/BookDepository",
+              // params: {status: 1}
+            })
           }}
         />
         <BouncyCheckbox
