@@ -4,24 +4,20 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  ScrollView,
   FlatList,
   RefreshControl,
 } from "react-native";
 import styles from "@/components/BookDepository/styles";
 import BookDeposButton from "@/components/ui/BookDeposButton";
-import {
-  router,
-  useGlobalSearchParams,
-  useLocalSearchParams,
-} from "expo-router";
+import { router } from "expo-router";
 import {
   getData,
   DeleteAll,
   deleteBook,
 } from "@/components/BookDepository/BookDepository.service";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
+import { log } from "@/configs/logger";
+import { useIsFocused } from "@react-navigation/native";
 
 export interface books {
   id: number;
@@ -40,18 +36,14 @@ function BookDepository() {
   const fetchData = async () => {
     try {
       const data = await getData();
+      log.debug(`(fetchData): Полученные данные: ${data}`);
       setArray(data ? JSON.parse(data) : []);
-      // console.log("data: ", data);
-      // console.log("parsedData: ", JSON.parse(data as string));
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -73,34 +65,20 @@ function BookDepository() {
         <Text style={styles.h1}>Книги отсуствуют</Text>
         <BookDeposButton
           text="Создать новую книгу"
-          func={() => router.replace("/BookDepository/add")}
+          func={() => {
+            router.replace("/BookDepository/add");
+          }}
         />
 
-        <BookDeposButton
+        {/* <BookDeposButton
           text="Если же вы добавили книгу, пожалуйста, перезагрузите страницу"
           func={fetchData}
-        />
+        /> */}
       </View>
     );
   } else {
     return (
       <View>
-        {/* <Text style={styles.h1}>Ваши книги: </Text> */}
-        {/* {array.map((books) => (
-          <View key={books.id} style={BookDepository_styles.section}>
-            <Text>Id книги: {books.id}</Text>
-            <Text>Название книги: {books.name}</Text>
-            <Text>Дата добавление книги: {books.date}</Text>
-            <Text>Прочтена? {books.status ? "Да" : "Нет"}</Text>
-            <BookDeposButton
-              text="Удалить книгу"
-              func={async () => {
-                await deleteBook(books.id);
-                fetchData();
-              }}
-            />
-          </View>
-        ))} */}
         <FlatList
           data={array}
           renderItem={({ item }) => (
@@ -116,9 +94,17 @@ function BookDepository() {
                   fetchData();
                 }}
               />
+              <BookDeposButton
+                text="Посмотреть книгу подробнее"
+                func={() =>
+                  router.push({
+                    pathname: "/BookDepository/[id]",
+                    params: { id: item.id },
+                  })
+                }
+              />
             </View>
           )}
-          // keyExtractor={(item) => item.id}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={fetchData} />
           }
@@ -147,21 +133,7 @@ function BookDepository() {
             </View>
           }
         />
-        {/* <View style={styles.center}>
-          <BookDeposButton
-            text="Создать новую книгу"
-            func={() => router.replace("/BookDepository/add")}
-          />
-          <BookDeposButton
-            text="Удалить все книги"
-            func={async () => {
-              await DeleteAll();
-              setArray([]);
-              fetchData();
-            }} */}
-        {/* /> */}
       </View>
-      //  </View>
     );
   }
 }

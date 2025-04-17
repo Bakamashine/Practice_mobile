@@ -68,9 +68,13 @@ export const storeData = async (value: string | books) => {
 export const getData = async () => {
   try {
     const value = await AsyncStorage.getItem("books");
+    log.debug(`(getData): Полученные данные ${JSON.stringify(value)}`);
     if (value !== null) {
       return value;
-    } else throw new Error("Books not found 404");
+    } else {
+      // throw new Error("Books not found 404")
+      log.error("Books not found 404");
+    }
   } catch (err) {
     if (err instanceof Error) {
       console.error(`${err.name} : ${err.message}`);
@@ -105,6 +109,25 @@ export const deleteBook = async (id: number) => {
     log.info(`Была удалена книга с id: ${id}`);
 
     await AsyncStorage.setItem("books", JSON.stringify(booksArray));
+  } catch (err) {
+    if (err instanceof Error) {
+      console.log(`${err.name}: ${err.message}`);
+    }
+  }
+};
+
+/**
+ * Вывод информации определённой книги (по id)
+ * @param id ID выводимой книги
+ * @returns Массив с информацией
+ */
+export const getBookforId = async (id: number) => {
+  try {
+    const response = await AsyncStorage.getItem("books");
+    let array: Array<books> = JSON.parse(response as string);
+    let filteredArray = array.filter((value) => value.id == id);
+    log.info(`Произошёл просмотр книги по ID: ${id}`);
+    return filteredArray[0];
   } catch (err) {
     if (err instanceof Error) {
       console.log(`${err.name}: ${err.message}`);

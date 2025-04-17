@@ -47,6 +47,10 @@ function add() {
     ]
     return `${week[date.getDay()]}, ${date.getDate()} ${mounth[date.getMonth()]} ${date.getFullYear()} г.`;
   }
+  
+  function back() {
+    router.replace('/BookDepository')
+  }
 
   return (
     <View>
@@ -58,18 +62,14 @@ function add() {
       <View style={[styles.center]}>
         <BookDeposButton
           text={`Добавить новую книгу`}
-          func={() => {
-            storeData({
+          func={async () => {
+            await storeData({
               name: name,
               id: 0,
               date: date_to_day(),
               status: check,
             });
-            // router.replace("/BookDepository");
-            router.push({
-              pathname:"/BookDepository",
-              // params: {status: 1}
-            })
+            back()
           }}
         />
         <BouncyCheckbox
@@ -80,7 +80,7 @@ function add() {
         />
         <BookDeposButton
           text="Назад"
-          func={() => router.replace("/BookDepository")}
+          func={back}
         />
       </View>
     </View>

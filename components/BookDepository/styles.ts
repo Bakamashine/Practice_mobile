@@ -32,6 +32,9 @@ const styles = StyleSheet.create({
     padding: 20,
     // backgroundColor: "#fff",
   },
+  textCenter: {
+    textAlign: 'center'
+  }
 });
 
 export default styles;

@@ -25,6 +25,14 @@ function Layout() {
           // headerBackground:  () => null
         }} />
         
+        <Drawer.Screen name="BookDepository/add" options={{
+          headerTitle: "Добавление книги"
+        }} />
+        
+        <Drawer.Screen name="BookDepository/[id]" options={{
+          headerTitle: "Подробная информация книги" 
+        }} />
+        
         {/* {false ||
         <Drawer.Screen  name="DroidQuest/modal" options={{
           headerTitle: "Deceit",
