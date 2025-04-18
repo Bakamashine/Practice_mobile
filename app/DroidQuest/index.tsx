@@ -84,7 +84,7 @@ const App = () => {
   const end = (result: boolean) => {
       let finalScore = score + (result ? 1 : 0);
       setQuizFinished(true);
-      log.info(
+      log.debug(
         `Пользователь завершил тест с результатом: ${finalScore} из ${questions.length}`
       );
   }
@@ -97,7 +97,7 @@ const App = () => {
     if (result) {
       setStatus(true);
       setScore(score + 1);
-      log.info(
+      log.debug(
         `Пользователь ответил правильно на вопрос: ${questions[currentQuestionIndex].question}`
       );
     } else {
@@ -125,7 +125,7 @@ const App = () => {
             setCurrentQuestionIndex(0);
             setQuizFinished(false);
             setScore(0);
-            log.info("Тест начали с начала");
+            log.debug("Тест начали с начала");
           }}
         >
           <Text>Пройти снова</Text>
@@ -181,7 +181,7 @@ const App = () => {
           onPress={() => {
             setCurrentQuestionIndex(currentQuestionIndex - 1);
 
-            log.info("Пользователь вернулся на вопрос назад");
+            log.debug("Пользователь вернулся на вопрос назад");
             if (status) {
               setScore(score - 1);
             }
@@ -203,7 +203,7 @@ const App = () => {
               setCurrentQuestionIndex(currentQuestionIndex + 1);
               // setQuizFinished(true)
             } else end(false)
-            log.info("Пользователь перешёл на другой вопрос");
+            log.debug("Пользователь перешёл на другой вопрос");
           }}
         >
           <Text>{currentQuestionIndex != questions.length-1 ? "Далее" : "Закончить тест"}</Text>

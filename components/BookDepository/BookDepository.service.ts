@@ -41,10 +41,10 @@ export const storeData = async (value: string | books) => {
 
       if (response !== null && response !== "[]") {
         booksArray = JSON.parse(response);
-        log.info("Некоторые книги уже были: ", booksArray);
+        log.debug("Некоторые книги уже были: ", booksArray);
         let id = booksArray[booksArray.length - 1]["id"];
         value.id = id + 1;
-        log.info(
+        log.debug(
           `Будет добавлена новая книга с id: ${value.id}, прошлое id было: ${id}`
         );
       }
@@ -88,7 +88,7 @@ export const getData = async () => {
 export const DeleteAll = async () => {
   try {
     await AsyncStorage.removeItem("books");
-    log.info("Были удалены все книги");
+    log.debug("Были удалены все книги");
   } catch (err) {
     if (err instanceof Error) {
       console.log(`${err.name}: ${err.message}`);
@@ -106,7 +106,7 @@ export const deleteBook = async (id: number) => {
     let booksArray = response ? JSON.parse(response) : [];
 
     booksArray = booksArray.filter((book: books) => book.id !== id);
-    log.info(`Была удалена книга с id: ${id}`);
+    log.debug(`Была удалена книга с id: ${id}`);
 
     await AsyncStorage.setItem("books", JSON.stringify(booksArray));
   } catch (err) {
@@ -126,8 +126,24 @@ export const getBookforId = async (id: number) => {
     const response = await AsyncStorage.getItem("books");
     let array: Array<books> = JSON.parse(response as string);
     let filteredArray = array.filter((value) => value.id == id);
-    log.info(`Произошёл просмотр книги по ID: ${id}`);
+    log.debug(`Произошёл просмотр книги по ID: ${id}`);
     return filteredArray[0];
+  } catch (err) {
+    if (err instanceof Error) {
+      console.log(`${err.name}: ${err.message}`);
+    }
+  }
+};
+
+export const getMaxId = async () => {
+  try {
+    const response = await AsyncStorage.getItem("books");
+    let array: Array<books> = JSON.parse(response as string);
+    for (let i = 0; i < array.length; i++) {
+      if (i == array.length-1) {
+        return array[i].id 
+      }
+    }
   } catch (err) {
     if (err instanceof Error) {
       console.log(`${err.name}: ${err.message}`);

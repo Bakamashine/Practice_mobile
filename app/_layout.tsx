@@ -10,18 +10,15 @@ function Layout() {
     <GestureHandlerRootView>
       <Drawer drawerContent={CustomDrawerComponents}>
         <Drawer.Screen name="index" options={{
-          // drawerLabel: 'Home',
           headerTitle: 'Главная',
         }} />
         <Drawer.Screen name="DroidQuest/index" options={{
-          // drawerLabel: "DroidQuest",
           headerTitle: 'DroidQuest',
         }} />
         
         <Drawer.Screen name="BookDepository/index" options={{
           drawerLabel: "BookDepository",
           headerTitle: "BookDepository",
-          // headerBackground:  () => null
         }} />
         
         <Drawer.Screen name="BookDepository/add" options={{
@@ -32,12 +29,6 @@ function Layout() {
           headerTitle: "Подробная информация книги" 
         }} />
         
-        {/* {false ||
-        <Drawer.Screen  name="DroidQuest/modal" options={{
-          headerTitle: "Deceit",
-          drawerItemStyle: {display: 'none'},
-        }}  />
-      } */}
       </Drawer>
     </GestureHandlerRootView>
   );

@@ -34,6 +34,9 @@ const styles = StyleSheet.create({
   },
   textCenter: {
     textAlign: 'center'
+  },
+  hidden: {
+    display: 'none'
   }
 });
 
