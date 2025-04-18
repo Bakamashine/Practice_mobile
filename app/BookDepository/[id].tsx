@@ -18,7 +18,7 @@ export default function DetailBook() {
    * Массив с книгой
    */
   const [array, setArray] = React.useState<books>();
-  
+
   /**
    * Статус "последней книги"
    * Делает видимым или не видимым кнопку перехода на следующую книгу
@@ -31,7 +31,9 @@ export default function DetailBook() {
    */
   const checkMaxId = async () => {
     let max_id = await getMaxId();
-    return max_id != parseInt(id);
+    let result = max_id != parseInt(id);
+    setStatusId(result);
+    return result;
   };
 
   /**
@@ -65,7 +67,6 @@ export default function DetailBook() {
     );
     setArray(response);
   };
-
 
   useFocusEffect(
     useCallback(() => {
