@@ -14,8 +14,15 @@ import { log } from "@/configs/logger";
 export default function DetailBook() {
   let { id } = useLocalSearchParams<{ id: string }>();
 
-  const [new_id, setNewId] = React.useState(parseInt(id));
+  /**
+   * Массив с книгой
+   */
   const [array, setArray] = React.useState<books>();
+  
+  /**
+   * Статус "последней книги"
+   * Делает видимым или не видимым кнопку перехода на следующую книгу
+   */
   const [status_id, setStatusId] = React.useState(false);
 
   /**
@@ -24,7 +31,7 @@ export default function DetailBook() {
    */
   const checkMaxId = async () => {
     let max_id = await getMaxId();
-    return max_id != new_id;
+    return max_id != parseInt(id);
   };
 
   /**
@@ -39,7 +46,7 @@ export default function DetailBook() {
         params: { id: new_id },
       });
       log.debug(`Пользователь перешёл на следующую книгу с id: ${new_id}`);
-    } 
+    }
   };
 
   /**
@@ -59,24 +66,12 @@ export default function DetailBook() {
     setArray(response);
   };
 
-  /**
-   * При смене new_id, идёт снова вызов функции fetchData
-   */
-  useFocusEffect(
-    useCallback(() => {
-      fetchData(new_id);
-    }, [new_id])
-  );
 
-  /**
-   * При изменения передаваемого id, меняет и переменную new_id
-   */
   useFocusEffect(
     useCallback(() => {
-      setNewId(parseInt(id));
+      fetchData(parseInt(id));
     }, [id])
   );
-
   return (
     <View>
       <Text style={styles.h1}>{array?.name}</Text>
