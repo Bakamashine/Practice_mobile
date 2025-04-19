@@ -1,13 +1,16 @@
 import React from "react";
 import { Button, View, Text } from "react-native";
-import { getBookforId } from "@/components/BookDepository/BookDepository.service";
+import {
+  getBookforId,
+  updateDate,
+} from "@/components/BookDepository/BookDepository.service";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { log } from "@/configs/logger";
 import { books } from ".";
 import { useCallback } from "react";
 import BookDeposButton from "@/components/ui/BookDeposButton";
 import { router } from "expo-router";
-import DatePicker, {
+import {
   DateTimePickerAndroid,
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
@@ -18,7 +21,6 @@ export default function redact() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [array, setArray] = React.useState<books>();
-  const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState(new Date());
   const fetchData = async (id: number) => {
     const response = await getBookforId(id);
@@ -34,12 +36,13 @@ export default function redact() {
   useFocusEffect(
     useCallback(() => {
       fetchData(parseInt(id));
-    }, [id])
+    }, [id, date])
   );
 
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate;
-    currentDate !== undefined ? setDate(currentDate) : null
+    currentDate !== undefined ? setDate(currentDate) : null;
+    updateDate(parseInt(id), currentDate as Date);
   };
 
   const showMode = (currentMode: any) => {

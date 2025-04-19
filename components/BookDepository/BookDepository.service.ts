@@ -54,10 +54,12 @@ export const storeData = async (value: string | books) => {
       await AsyncStorage.setItem("books", JSON.stringify(booksArray));
       log.debug("Было добавлено: ", value);
     } else if (typeof value === "string" && value !== null) {
-      if (response !== null && response !== "[]") {
-        booksArray = JSON.parse(response);
-        log.debug("Некоторые книги уже были: ", booksArray);
-      }
+      // if (response !== null && response !== "[]") {
+      //   booksArray = JSON.parse(response);
+      //   log.debug("Некоторые книги уже были: ", booksArray);
+      // }
+      
+      log.error("В разработке")
     }
   } catch (err) {
     if (err instanceof Error) {
@@ -77,7 +79,6 @@ export const getData = async () => {
     if (value !== null) {
       return value;
     } else {
-      // throw new Error("Books not found 404")
       log.error("Books not found 404");
     }
   } catch (err) {
@@ -195,9 +196,37 @@ export const date_to_day = (date: Date) => {
   } ${date.getFullYear()} г.`;
 };
 
+export const updateBook = async (updatedBooksArray: books[], id?: number) => {
+  try {
+    const response = await getData();
+    if (response !== undefined) {
+      const booksArray: books[] = JSON.parse(response);
+      
+      if (id === undefined || id === null) {
+        await AsyncStorage.setItem("books", JSON.stringify(updatedBooksArray));
+        log.debug("Все книги были обновлены.");
+      } else {
+        const bookIndex = booksArray.findIndex(book => book.id === id);
+        if (bookIndex !== -1) {
+          booksArray[bookIndex] = updatedBooksArray[0];
+          await AsyncStorage.setItem("books", JSON.stringify(booksArray));
+          log.debug(`Книга с id: ${id} была обновлена.`);
+        } else {
+          log.error(`Книга с id: ${id} не найдена для обновления.`);
+        }
+      }
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(`${err.name}: ${err.message}`);
+    }
+  }
+};
+
 /**
  * Меняет дату добавления книги (по id)
  * @param id ID записи
+ * @param new_data Новая дата
  */
 export const updateDate = async (id: number, new_data: Date) => {
   try {
@@ -207,10 +236,12 @@ export const updateDate = async (id: number, new_data: Date) => {
       for (let i = 0; i < booksArray.length; i++) {
         if (booksArray[i].id === id) {
           booksArray[i].date = date_to_day(new_data);
+          log.debug(`Обновление даты книги под id: ${id}:\nНовая дата: ${date_to_day(new_data)}`)
           break;
         }
       }
-      storeData(JSON.stringify(booksArray));
+      log.debug(`Итоговая дата после изменения: ${JSON.stringify(booksArray)}`)
+      updateBook(booksArray)
     }
   } catch (err) {
     if (err instanceof Error) {
