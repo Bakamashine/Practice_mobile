@@ -113,6 +113,13 @@ function BookDepository() {
                   })
                 }
               />
+              <BookDeposButton
+                text="Изменить дату прочтения"
+                func={() => router.push({
+                  pathname: "/BookDepository/redact",
+                  params: {id: item.id}
+                })}
+                />
             </View>
           )}
           refreshControl={
