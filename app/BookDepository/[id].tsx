@@ -1,71 +1,53 @@
-import React, { useCallback } from "react";
+/**
+ * Только для мобильных устройств
+ * К сожалению, в браузере больше не открыть, выдаёт исключение
+ */
+import React, { useCallback, useRef } from "react";
 import { useLocalSearchParams } from "expo-router";
-import { View, Text } from "react-native";
+import { View, Text, Platform, StyleSheet } from "react-native";
 import BookDeposButton from "@/components/ui/BookDeposButton";
 import { router, useFocusEffect } from "expo-router";
-import {
-  getBookforId,
-  getMaxId,
-} from "@/components/BookDepository/BookDepository.service";
+import { getData } from "@/components/BookDepository/BookDepository.service";
 import { books } from ".";
 import styles from "@/components/BookDepository/styles";
 import { log } from "@/configs/logger";
+import PagerView from "react-native-pager-view";
 
 export default function DetailBook() {
   let { id } = useLocalSearchParams<{ id: string }>();
 
+  const pagerRef = useRef<PagerView>(null);
+
+  const goToPage = (index: number) => {
+    if (pagerRef.current) {
+      pagerRef.current.setPageWithoutAnimation(index);
+    }
+  };
+
   /**
    * Массив с книгой
    */
-  const [array, setArray] = React.useState<books>();
-
-  /**
-   * Статус "последней книги"
-   * Делает видимым или не видимым кнопку перехода на следующую книгу
-   */
-  const [status_id, setStatusId] = React.useState(false);
-
-  /**
-   * Получение максимального id
-   * @returns Получение максимального id
-   */
-  const checkMaxId = async () => {
-    let max_id = await getMaxId();
-    let result = max_id != parseInt(id);
-    setStatusId(result);
-    return result;
-  };
-
-  /**
-   * Осуществляется переход на следующую книгу
-   */
-  const handleNextBook = async () => {
-    const canGoNextBook = await checkMaxId();
-    if (canGoNextBook) {
-      let new_id = parseInt(id) + 1;
-      router.push({
-        pathname: "/BookDepository/[id]",
-        params: { id: new_id },
-      });
-      log.debug(`Пользователь перешёл на следующую книгу с id: ${new_id}`);
-    }
-  };
+  const [array, setArray] = React.useState<books[]>([]);
 
   /**
    * Получает информацию о книге по id
    * @param id Передаваемый id
    */
   const fetchData = async (id: number) => {
-    const response = await getBookforId(id);
+    const response = await getData();
     if (response === undefined) {
       router.push("/BookDepository");
     }
     log.debug(
-      `Пользователь получил данные когда зашёл посмотреть "подробнее": ${JSON.stringify(
+      `(fetchData)([id]): Пользователь получил такие данные: ${JSON.stringify(
         response
       )}`
     );
-    setArray(response);
+    // setArray(JSON.parse(response as string));
+    const booksArray: books[] = JSON.parse(response as string);
+    setArray(booksArray);
+    const index = booksArray.findIndex((book) => book.id === id);
+    index !== -1 ? goToPage(index) : null;
   };
 
   useFocusEffect(
@@ -73,24 +55,34 @@ export default function DetailBook() {
       fetchData(parseInt(id));
     }, [id])
   );
+
   return (
-    <View>
-      <Text style={styles.h1}>{array?.name}</Text>
-      <Text style={styles.textCenter}>Дата добавления: {array?.date}</Text>
-      <Text style={styles.textCenter}>
-        Прочтена? {array?.status ? "Да" : "Нет"}
-      </Text>
-      <View style={styles.center}>
-        <BookDeposButton
-          text="Перейти к остальным книгам"
-          func={() => router.push("/BookDepository")}
-        />
-        <BookDeposButton
-          text="Следующая книга"
-          func={handleNextBook}
-          disabled={status_id}
-        />
-      </View>
+    <View style={styles_id.container}>
+      <PagerView style={styles_id.container} ref={pagerRef}>
+        {array.map((item) => (
+          <View key={item.id} style={styles_id.page}>
+            <Text style={styles.h1}>{item?.name}</Text>
+            <Text style={styles.textCenter}>Дата добавления: {item?.date}</Text>
+            <Text style={styles.textCenter}>
+              Прочтена? {item?.status ? "Да" : "Нет"}
+            </Text>
+            <BookDeposButton
+              text="Перейти к остальным книгам"
+              func={() => router.push("/BookDepository")}
+            />
+          </View>
+        ))}
+      </PagerView>
     </View>
   );
 }
+
+const styles_id = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  page: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
