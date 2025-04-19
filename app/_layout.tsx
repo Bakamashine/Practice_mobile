@@ -9,26 +9,40 @@ function Layout() {
   return (
     <GestureHandlerRootView>
       <Drawer drawerContent={CustomDrawerComponents}>
-        <Drawer.Screen name="index" options={{
-          headerTitle: 'Главная',
-        }} />
-        <Drawer.Screen name="DroidQuest/index" options={{
-          headerTitle: 'DroidQuest',
-        }} />
-        
-        <Drawer.Screen name="BookDepository/index" options={{
-          drawerLabel: "BookDepository",
-          headerTitle: "BookDepository",
-        }} />
-        
-        <Drawer.Screen name="BookDepository/add" options={{
-          headerTitle: "Добавление книги"
-        }} />
-        
-        <Drawer.Screen name="BookDepository/[id]" options={{
-          headerTitle: "Подробная информация книги" 
-        }} />
-        
+        <Drawer.Screen
+          name="index"
+          options={{
+            headerTitle: "Главная",
+          }}
+        />
+        <Drawer.Screen
+          name="DroidQuest/index"
+          options={{
+            headerTitle: "DroidQuest",
+          }}
+        />
+
+        <Drawer.Screen
+          name="BookDepository/index"
+          options={{
+            drawerLabel: "BookDepository",
+            headerTitle: "BookDepository",
+          }}
+        />
+
+        <Drawer.Screen
+          name="BookDepository/add"
+          options={{
+            headerTitle: "Добавление книги",
+          }}
+        />
+
+        <Drawer.Screen
+          name="BookDepository/[id]"
+          options={{
+            headerTitle: "Подробная информация книги",
+          }}
+        />
       </Drawer>
     </GestureHandlerRootView>
   );

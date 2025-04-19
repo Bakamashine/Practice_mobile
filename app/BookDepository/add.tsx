@@ -3,7 +3,10 @@ import { View, TextInput, StyleSheet } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import styles from "@/components/BookDepository/styles";
 import BookDeposButton from "@/components/ui/BookDeposButton";
-import { date_to_day, storeData } from "@/components/BookDepository/BookDepository.service";
+import {
+  date_to_day,
+  storeData,
+} from "@/components/BookDepository/BookDepository.service";
 import { router } from "expo-router";
 
 function add() {

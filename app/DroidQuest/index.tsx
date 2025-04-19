@@ -76,18 +76,18 @@ const App = () => {
       setStatusModal2(false);
     }, 3000);
   }, [statusModal2, statusLie]);
-  
+
   /**
    * Заканчивает тест
    * @param result Передаваемый результат
    */
   const end = (result: boolean) => {
-      let finalScore = score + (result ? 1 : 0);
-      setQuizFinished(true);
-      log.debug(
-        `Пользователь завершил тест с результатом: ${finalScore} из ${questions.length}`
-      );
-  }
+    let finalScore = score + (result ? 1 : 0);
+    setQuizFinished(true);
+    log.debug(
+      `Пользователь завершил тест с результатом: ${finalScore} из ${questions.length}`
+    );
+  };
   /**
    * Сравнивает полученный ответ с ответом, который указан в Object в котором находится вопрос
    * @param userAnswer Ответ пользователя
@@ -106,7 +106,7 @@ const App = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      end(result)
+      end(result);
     }
   };
 
@@ -133,7 +133,6 @@ const App = () => {
       </View>
     );
   }
-
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -199,14 +198,18 @@ const App = () => {
           style={styles.button}
           onPress={() => {
             setStatusLie(false);
-            if (currentQuestionIndex < questions.length-1) {
+            if (currentQuestionIndex < questions.length - 1) {
               setCurrentQuestionIndex(currentQuestionIndex + 1);
               // setQuizFinished(true)
-            } else end(false)
+            } else end(false);
             log.debug("Пользователь перешёл на другой вопрос");
           }}
         >
-          <Text>{currentQuestionIndex != questions.length-1 ? "Далее" : "Закончить тест"}</Text>
+          <Text>
+            {currentQuestionIndex != questions.length - 1
+              ? "Далее"
+              : "Закончить тест"}
+          </Text>
         </TouchableOpacity>
       ) : (
         <Text></Text>
@@ -220,7 +223,7 @@ const App = () => {
       >
         <Text>Обмануть!</Text>
       </TouchableOpacity>
-      
+
       {/* <Text>{score}</Text> */}
 
       {/* FIXME: Потом следует сделать модальные окна в отдельный компонент */}

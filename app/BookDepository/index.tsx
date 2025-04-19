@@ -26,20 +26,19 @@ export interface books {
 }
 
 function BookDepository() {
-  
   /**
    * Массив в который передаётся информация о книгах
    * из AsyncStorage
    * @default []
    */
   const [array, setArray] = useState<books[]>([]);
-  
+
   /**
    * Статус прогрузки страницы
    * @default true
    */
   const [loading, setLoading] = useState<boolean>(true);
-  
+
   /**
    * Статус перезагрузки для FlatList (RefreshControll)
    * @default false
@@ -115,11 +114,13 @@ function BookDepository() {
               />
               <BookDeposButton
                 text="Изменить дату прочтения"
-                func={() => router.push({
-                  pathname: "/BookDepository/redact",
-                  params: {id: item.id}
-                })}
-                />
+                func={() =>
+                  router.push({
+                    pathname: "/BookDepository/redact",
+                    params: { id: item.id },
+                  })
+                }
+              />
             </View>
           )}
           refreshControl={

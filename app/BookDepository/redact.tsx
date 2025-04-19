@@ -18,7 +18,6 @@ import BackButton from "@/components/BookDepository/BookDeposBackButton";
 import styles from "@/components/BookDepository/styles";
 
 export default function redact() {
-  
   /**
    * Передаваемый id
    */
@@ -29,15 +28,15 @@ export default function redact() {
    * вызванная по id
    */
   const [array, setArray] = React.useState<books>();
-  
+
   /**
    * Переменная под дату
    */
   const [date, setDate] = React.useState(new Date());
-  
+
   /**
    * Получение книги по id
-   * @param id 
+   * @param id
    */
   const fetchData = async (id: number) => {
     const response = await getBookforId(id);
@@ -59,7 +58,7 @@ export default function redact() {
   /**
    * Меняет дату
    * @param event Не используется, DateTimePickerAndroid сам передаёт аргумент
-   * @param selectedDate Необязательный параметр (хотя странно), служит для передачи выбранной даты 
+   * @param selectedDate Необязательный параметр (хотя странно), служит для передачи выбранной даты
    */
   const onChange = async (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate;
