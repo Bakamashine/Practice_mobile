@@ -12,6 +12,7 @@ import { books } from ".";
 import styles from "@/components/BookDepository/styles";
 import { log } from "@/configs/logger";
 import PagerView from "react-native-pager-view";
+import BookDeposBackButton from "@/components/BookDepository/BookDeposBackButton";
 
 export default function DetailBook() {
   let { id } = useLocalSearchParams<{ id: string }>();
@@ -56,25 +57,32 @@ export default function DetailBook() {
     }, [id])
   );
 
-  return (
-    <View style={styles_id.container}>
-      <PagerView style={styles_id.container} ref={pagerRef}>
-        {array.map((item) => (
-          <View key={item.id} style={styles_id.page}>
-            <Text style={styles.h1}>{item?.name}</Text>
-            <Text style={styles.textCenter}>Дата добавления: {item?.date}</Text>
-            <Text style={styles.textCenter}>
-              Прочтена? {item?.status ? "Да" : "Нет"}
-            </Text>
-            <BookDeposButton
-              text="Перейти к остальным книгам"
-              func={() => router.push("/BookDepository")}
-            />
-          </View>
-        ))}
-      </PagerView>
-    </View>
-  );
+  if (Platform.OS === "web") {
+    return (
+      <View style={styles.container}>
+        <Text>Только для телефонов</Text>
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles_id.container}>
+        <PagerView style={styles_id.container} ref={pagerRef}>
+          {array.map((item) => (
+            <View key={item.id} style={styles_id.page}>
+              <Text style={styles.h1}>{item?.name}</Text>
+              <Text style={styles.textCenter}>
+                Дата добавления: {item?.date}
+              </Text>
+              <Text style={styles.textCenter}>
+                Прочтена? {item?.status ? "Да" : "Нет"}
+              </Text>
+              <BookDeposBackButton />
+            </View>
+          ))}
+        </PagerView>
+      </View>
+    );
+  }
 }
 
 const styles_id = StyleSheet.create({

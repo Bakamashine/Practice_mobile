@@ -9,7 +9,11 @@ import BookDeposButton from "@/components/ui/BookDeposButton";
 import { router } from "expo-router";
 import DatePicker, {
   DateTimePickerAndroid,
+  DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
+import BackButton from "@/components/BookDepository/BookDeposBackButton";
+import styles from "@/components/BookDepository/styles";
+
 export default function redact() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
@@ -33,9 +37,9 @@ export default function redact() {
     }, [id])
   );
 
-  const onChange = (event: any, selectedDate: any) => {
+  const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate;
-    setDate(currentDate);
+    currentDate !== undefined ? setDate(currentDate) : null
   };
 
   const showMode = (currentMode: any) => {
@@ -49,12 +53,15 @@ export default function redact() {
 
   return (
     <View>
-      <Text>{array?.name}</Text>
-      <BookDeposButton
-        text="Вернуться к книгам"
-        func={() => router.replace("/BookDepository")}
-      />
-      <BookDeposButton text="Изменить дату" func={showMode} />
+      <Text style={styles.h1}>{array?.name}</Text>
+      <Text style={styles.textCenter}>Дата добавления: {array?.date}</Text>
+      <Text style={styles.textCenter}>
+        Прочтена? {array?.status ? "Да" : "Нет"}
+      </Text>
+      <View style={styles.center}>
+        <BackButton />
+        <BookDeposButton text="Изменить дату" func={showMode} />
+      </View>
     </View>
   );
 }

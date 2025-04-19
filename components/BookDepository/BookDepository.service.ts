@@ -1,6 +1,7 @@
 import { books } from "@/app/BookDepository";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { log } from "@/configs/logger";
+import { underDampedSpringCalculations } from "react-native-reanimated/lib/typescript/animation/springUtils";
 
 /**
  * Добавление книги в локальное хранилище
@@ -35,10 +36,9 @@ export const storeData = async (value: string | books) => {
   // }
 
   try {
+    const response = await AsyncStorage.getItem("books");
+    let booksArray: books[] = [];
     if (typeof value === "object" && value !== null) {
-      const response = await AsyncStorage.getItem("books");
-      let booksArray: books[] = [];
-
       if (response !== null && response !== "[]") {
         booksArray = JSON.parse(response);
         log.debug("Некоторые книги уже были: ", booksArray);
@@ -53,6 +53,11 @@ export const storeData = async (value: string | books) => {
 
       await AsyncStorage.setItem("books", JSON.stringify(booksArray));
       log.debug("Было добавлено: ", value);
+    } else if (typeof value === "string" && value !== null) {
+      if (response !== null && response !== "[]") {
+        booksArray = JSON.parse(response);
+        log.debug("Некоторые книги уже были: ", booksArray);
+      }
     }
   } catch (err) {
     if (err instanceof Error) {
@@ -135,14 +140,77 @@ export const getBookforId = async (id: number) => {
   }
 };
 
+/**
+ * Получение id последней книги
+ * @returns Максимальный ID
+ */
 export const getMaxId = async () => {
   try {
     const response = await AsyncStorage.getItem("books");
     let array: Array<books> = JSON.parse(response as string);
     for (let i = 0; i < array.length; i++) {
-      if (i == array.length-1) {
-        return array[i].id 
+      if (i == array.length - 1) {
+        return array[i].id;
       }
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      console.log(`${err.name}: ${err.message}`);
+    }
+  }
+};
+
+/**
+ * Форматирует дату по заданному стандарту
+ * @param date Передаваемая дата для форматирования
+ * @returns Отформатированая дата
+ */
+export const date_to_day = (date: Date) => {
+  let week = [
+    "Воскресенье",
+    "Понедельник",
+    "Вторник",
+    "Среда",
+    "Четверг",
+    "Пятница",
+    "Суббота",
+  ];
+
+  let mounth = [
+    "Январь",
+    "Февраль",
+    "Март",
+    "Апрель",
+    "Май",
+    "Июнь",
+    "Июль",
+    "Август",
+    "Сентябрь",
+    "Октябрь",
+    "Ноябрь",
+    "Декабрь",
+  ];
+  return `${week[date.getDay()]}, ${date.getDate()} ${
+    mounth[date.getMonth()]
+  } ${date.getFullYear()} г.`;
+};
+
+/**
+ * Меняет дату добавления книги (по id)
+ * @param id ID записи
+ */
+export const updateDate = async (id: number, new_data: Date) => {
+  try {
+    const response = await getData();
+    if (response !== undefined) {
+      const booksArray: books[] = JSON.parse(response);
+      for (let i = 0; i < booksArray.length; i++) {
+        if (booksArray[i].id === id) {
+          booksArray[i].date = date_to_day(new_data);
+          break;
+        }
+      }
+      storeData(JSON.stringify(booksArray));
     }
   } catch (err) {
     if (err instanceof Error) {
