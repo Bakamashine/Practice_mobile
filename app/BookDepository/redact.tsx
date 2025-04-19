@@ -18,10 +18,27 @@ import BackButton from "@/components/BookDepository/BookDeposBackButton";
 import styles from "@/components/BookDepository/styles";
 
 export default function redact() {
+  
+  /**
+   * Передаваемый id
+   */
   const { id } = useLocalSearchParams<{ id: string }>();
 
+  /**
+   * Объект, в который добавления книга,
+   * вызванная по id
+   */
   const [array, setArray] = React.useState<books>();
+  
+  /**
+   * Переменная под дату
+   */
   const [date, setDate] = React.useState(new Date());
+  
+  /**
+   * Получение книги по id
+   * @param id 
+   */
   const fetchData = async (id: number) => {
     const response = await getBookforId(id);
     log.debug(
@@ -39,12 +56,21 @@ export default function redact() {
     }, [id, date])
   );
 
+  /**
+   * Меняет дату
+   * @param event Не используется, DateTimePickerAndroid сам передаёт аргумент
+   * @param selectedDate Необязательный параметр (хотя странно), служит для передачи выбранной даты 
+   */
   const onChange = async (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate;
     await updateDate(parseInt(id), currentDate as Date);
     currentDate !== undefined ? setDate(currentDate) : null;
   };
 
+  /**
+   * Отображает меню с выбором даты
+   * @param currentMode Необязательный параметр, он сам его передаёт
+   */
   const showMode = (currentMode: any) => {
     DateTimePickerAndroid.open({
       value: date,

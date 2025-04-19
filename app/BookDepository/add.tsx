@@ -6,36 +6,6 @@ import BookDeposButton from "@/components/ui/BookDeposButton";
 import { date_to_day, storeData } from "@/components/BookDepository/BookDepository.service";
 import { router } from "expo-router";
 
-// function date_to_day() {
-//   let date = new Date();
-//   let week = [
-//     "Воскресенье",
-//     "Понедельник",
-//     "Вторник",
-//     "Среда",
-//     "Четверг",
-//     "Пятница",
-//     "Суббота",
-//   ];
-
-//   let mounth = [
-//     "Январь",
-//     "Февраль",
-//     "Март",
-//     "Апрель",
-//     "Май",
-//     "Июнь",
-//     "Июль",
-//     "Август",
-//     "Сентябрь",
-//     "Октябрь",
-//     "Ноябрь",
-//     "Декабрь",
-//   ];
-//   return `${week[date.getDay()]}, ${date.getDate()} ${
-//     mounth[date.getMonth()]
-//   } ${date.getFullYear()} г.`;
-// }
 function add() {
   /**
    * Статус нажатия на checkbox
@@ -86,5 +56,3 @@ function add() {
 }
 
 export default add;
-
-const add_style = StyleSheet.create({});

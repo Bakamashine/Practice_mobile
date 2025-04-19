@@ -19,6 +19,10 @@ export default function DetailBook() {
 
   const pagerRef = useRef<PagerView>(null);
 
+  /**
+   * Переход на страницу по передаваемому индексу
+   * @param index Индекс страницы на которую нужно перейти
+   */
   const goToPage = (index: number) => {
     if (pagerRef.current) {
       pagerRef.current.setPageWithoutAnimation(index);
@@ -44,7 +48,6 @@ export default function DetailBook() {
         response
       )}`
     );
-    // setArray(JSON.parse(response as string));
     const booksArray: books[] = JSON.parse(response as string);
     setArray(booksArray);
     const index = booksArray.findIndex((book) => book.id === id);
@@ -57,6 +60,11 @@ export default function DetailBook() {
     }, [id])
   );
 
+  /**
+   * Благодаря некоторым библиотекам, которые неразрывно связаны с android или ios
+   * Перестало отображаться в браузере.
+   * !FIXME: Этот хак не работает
+   */
   if (Platform.OS === "web") {
     return (
       <View style={styles.container}>
