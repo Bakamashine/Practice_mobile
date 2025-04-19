@@ -196,24 +196,19 @@ export const date_to_day = (date: Date) => {
   } ${date.getFullYear()} г.`;
 };
 
+/**
+ * Обновление книги
+ * @param updatedBooksArray Массив с книгой который следует заменить
+ * @param id Необязательный параметр, возможно, потом можно будет обновлять по ID
+ */
 export const updateBook = async (updatedBooksArray: books[], id?: number) => {
   try {
     const response = await getData();
     if (response !== undefined) {
       const booksArray: books[] = JSON.parse(response);
-      
       if (id === undefined || id === null) {
         await AsyncStorage.setItem("books", JSON.stringify(updatedBooksArray));
-        log.debug("Все книги были обновлены.");
-      } else {
-        const bookIndex = booksArray.findIndex(book => book.id === id);
-        if (bookIndex !== -1) {
-          booksArray[bookIndex] = updatedBooksArray[0];
-          await AsyncStorage.setItem("books", JSON.stringify(booksArray));
-          log.debug(`Книга с id: ${id} была обновлена.`);
-        } else {
-          log.error(`Книга с id: ${id} не найдена для обновления.`);
-        }
+        log.debug("(updateBook): Дата была успешно обновлена")
       }
     }
   } catch (err) {

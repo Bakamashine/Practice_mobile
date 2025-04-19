@@ -39,10 +39,10 @@ export default function redact() {
     }, [id, date])
   );
 
-  const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+  const onChange = async (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate;
+    await updateDate(parseInt(id), currentDate as Date);
     currentDate !== undefined ? setDate(currentDate) : null;
-    updateDate(parseInt(id), currentDate as Date);
   };
 
   const showMode = (currentMode: any) => {
