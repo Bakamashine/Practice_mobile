@@ -30,9 +30,9 @@ export default function DetailBook() {
     const index = array.findIndex((book) => book.id === id);
     if (index !== -1) {
       if (pagerRef.current) {
-        log.debug(`(goToPage)([id]): Перешло на страницу ${index}`);
         // pagerRef.current.setPage(index);
-        pagerRef.current.setPageWithoutAnimation(index)
+        pagerRef.current.setPageWithoutAnimation(index);
+        log.debug(`(goToPage)([id]): Перешло на страницу ${index}`);
       }
     } else log.error("Такой книги нет");
   };
@@ -51,9 +51,7 @@ export default function DetailBook() {
       router.push("/BookDepository");
     }
     log.debug(
-      `(fetchData)([id]): Пользователь получил такие данные: ${JSON.stringify(
-        response
-      )}`
+      `(fetchData)([id]): Пользователь получил такие данные: ${response}`
     );
     const booksArray: books[] = JSON.parse(response as string);
     setArray(booksArray);

@@ -1,7 +1,24 @@
 import { books } from "@/app/BookDepository";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { log } from "@/configs/logger";
-import { underDampedSpringCalculations } from "react-native-reanimated/lib/typescript/animation/springUtils";
+
+/**
+ *  Фабрика, которая позволяет добавить 100 книг в хранилище
+ */
+export const addOneHundredBooks = async () => {
+  const fabric = (id: number) => {
+    let name = `book${id}`;
+    return {
+      id,
+      name,
+      status: false,
+      date: date_to_day(new Date()),
+    };
+  };
+  for (let i = 0; i<100; i++) {
+    await storeData(fabric(i))
+  }
+};
 
 /**
  * Добавление книги в локальное хранилище
@@ -58,8 +75,8 @@ export const storeData = async (value: string | books) => {
       //   booksArray = JSON.parse(response);
       //   log.debug("Некоторые книги уже были: ", booksArray);
       // }
-      
-      log.error("В разработке")
+
+      log.error("В разработке");
     }
   } catch (err) {
     if (err instanceof Error) {
@@ -75,7 +92,7 @@ export const storeData = async (value: string | books) => {
 export const getData = async () => {
   try {
     const value = await AsyncStorage.getItem("books");
-    log.debug(`(getData): Полученные данные: ${JSON.stringify(value)}`);
+    log.debug(`(getData): Полученные данные: ${value}`);
     if (value !== null) {
       return value;
     } else {
@@ -208,7 +225,7 @@ export const updateBook = async (updatedBooksArray: books[], id?: number) => {
       const booksArray: books[] = JSON.parse(response);
       if (id === undefined || id === null) {
         await AsyncStorage.setItem("books", JSON.stringify(updatedBooksArray));
-        log.debug("(updateBook): Дата была успешно обновлена")
+        log.debug("(updateBook): Дата была успешно обновлена");
       }
     }
   } catch (err) {
@@ -231,12 +248,16 @@ export const updateDate = async (id: number, new_data: Date) => {
       for (let i = 0; i < booksArray.length; i++) {
         if (booksArray[i].id === id) {
           booksArray[i].date = date_to_day(new_data);
-          log.debug(`Обновление даты книги под id: ${id}:\nНовая дата: ${date_to_day(new_data)}`)
+          log.debug(
+            `Обновление даты книги под id: ${id}:\nНовая дата: ${date_to_day(
+              new_data
+            )}`
+          );
           break;
         }
       }
-      log.debug(`Итоговая дата после изменения: ${JSON.stringify(booksArray)}`)
-      updateBook(booksArray)
+      log.debug(`Итоговая дата после изменения: ${JSON.stringify(booksArray)}`);
+      updateBook(booksArray);
     }
   } catch (err) {
     if (err instanceof Error) {

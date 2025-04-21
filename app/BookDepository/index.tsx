@@ -14,6 +14,7 @@ import {
   getData,
   DeleteAll,
   deleteBook,
+  addOneHundredBooks,
 } from "@/components/BookDepository/BookDepository.service";
 import { useFocusEffect } from "expo-router";
 import { log } from "@/configs/logger";
@@ -83,6 +84,10 @@ function BookDepository() {
             router.replace("/BookDepository/add");
           }}
         />
+              <BookDeposButton
+                text="Добавить 100 книг"
+                func={async () => await addOneHundredBooks()}
+              />
       </View>
     );
   } else {
