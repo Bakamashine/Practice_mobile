@@ -243,9 +243,7 @@ const App = () => {
                   let str = `Ответ будет: ${
                     questions[currentQuestionIndex].answer ? "Да" : "Нет"
                   }`;
-                  // TODO: Заменить Alert
                   Alert.alert("Ошибка:", str);
-                  // alert(str);
                 }}
               >
                 <Text>Да, покажите мне ответ</Text>

@@ -84,10 +84,13 @@ function BookDepository() {
             router.replace("/BookDepository/add");
           }}
         />
-              <BookDeposButton
-                text="Добавить 100 книг"
-                func={async () => await addNumericBooks()}
-              />
+        <BookDeposButton
+          text="Добавить книг"
+          func={async () => {
+            await addNumericBooks(20);
+            fetchData();
+          }}
+        />
       </View>
     );
   } else {

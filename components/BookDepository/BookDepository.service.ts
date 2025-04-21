@@ -3,7 +3,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { log } from "@/configs/logger";
 
 /**
- *  Фабрика, которая позволяет добавить 100 книг в хранилище
+ * Фабрика, которая позволяет добавить 100 книг в хранилище
+ * @param num Кол-во добавляемых книг
  */
 export const addNumericBooks = async (num: number = 100) => {
   const fabric = (id: number) => {

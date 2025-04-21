@@ -66,12 +66,12 @@ export default function DetailBook() {
   useFocusEffect(
     useCallback(() => {
       goToPage(parseInt(id));
-    }, [id, array])
+    }, [array])
   );
   /**
    * Благодаря некоторым библиотекам, которые неразрывно связаны с android или ios
    * Перестало отображаться в браузере.
-   * !FIXME: Этот хак не работает
+   * ! FIXME: Этот хак не работает
    */
   if (Platform.OS === "web") {
     return (
