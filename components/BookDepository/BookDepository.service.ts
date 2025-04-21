@@ -5,7 +5,7 @@ import { log } from "@/configs/logger";
 /**
  *  Фабрика, которая позволяет добавить 100 книг в хранилище
  */
-export const addOneHundredBooks = async () => {
+export const addNumericBooks = async (num: number = 100) => {
   const fabric = (id: number) => {
     let name = `book${id}`;
     return {
@@ -15,7 +15,7 @@ export const addOneHundredBooks = async () => {
       date: date_to_day(new Date()),
     };
   };
-  for (let i = 0; i<100; i++) {
+  for (let i = 0; i<num; i++) {
     await storeData(fabric(i))
   }
 };

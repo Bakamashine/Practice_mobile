@@ -14,7 +14,7 @@ import {
   getData,
   DeleteAll,
   deleteBook,
-  addOneHundredBooks,
+  addNumericBooks,
 } from "@/components/BookDepository/BookDepository.service";
 import { useFocusEffect } from "expo-router";
 import { log } from "@/configs/logger";
@@ -86,7 +86,7 @@ function BookDepository() {
         />
               <BookDeposButton
                 text="Добавить 100 книг"
-                func={async () => await addOneHundredBooks()}
+                func={async () => await addNumericBooks()}
               />
       </View>
     );
