@@ -1,10 +1,10 @@
 /**
  * Только для мобильных устройств
  * К сожалению, в браузере больше не открыть, выдаёт исключение
- * 
+ *
  * !FIXME: Некорректно отображаются только что добавленные новые книги, после обновления всё приходит в норму
  */
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { View, Text, Platform, StyleSheet } from "react-native";
 import BookDeposButton from "@/components/ui/BookDeposButton";
@@ -22,13 +22,19 @@ export default function DetailBook() {
   const pagerRef = useRef<PagerView>(null);
 
   /**
-   * Переход на страницу по передаваемому индексу
+   * Переход на страницу по id
+   * TODO: Находит индекс записи по id
    * @param index Индекс страницы на которую нужно перейти
    */
-  const goToPage = (index: number) => {
-    if (pagerRef.current) {
-      pagerRef.current.setPageWithoutAnimation(index);
-    }
+  const goToPage = (id: number) => {
+    const index = array.findIndex((book) => book.id === id);
+    if (index !== -1) {
+      if (pagerRef.current) {
+        log.debug(`(goToPage)([id]): Перешло на страницу ${index}`);
+        // pagerRef.current.setPage(index);
+        pagerRef.current.setPageWithoutAnimation(index)
+      }
+    } else log.error("Такой книги нет");
   };
 
   /**
@@ -37,10 +43,9 @@ export default function DetailBook() {
   const [array, setArray] = React.useState<books[]>([]);
 
   /**
-   * Получает информацию о книге по id
-   * @param id Передаваемый id
+   * Получает все книги
    */
-  const fetchData = async (id: number) => {
+  const fetchData = async () => {
     const response = await getData();
     if (response === undefined) {
       router.push("/BookDepository");
@@ -52,16 +57,19 @@ export default function DetailBook() {
     );
     const booksArray: books[] = JSON.parse(response as string);
     setArray(booksArray);
-    const index = booksArray.findIndex((book) => book.id === id);
-    index !== -1 ? goToPage(index) : null;
   };
 
   useFocusEffect(
     useCallback(() => {
-      fetchData(parseInt(id));
+      fetchData();
     }, [id])
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      goToPage(parseInt(id));
+    }, [id, array])
+  );
   /**
    * Благодаря некоторым библиотекам, которые неразрывно связаны с android или ios
    * Перестало отображаться в браузере.
@@ -76,7 +84,11 @@ export default function DetailBook() {
   } else {
     return (
       <View style={styles_id.container}>
-        <PagerView style={styles_id.container} ref={pagerRef}>
+        <PagerView
+          style={styles_id.container}
+          ref={pagerRef}
+          // key={array.length}
+        >
           {array.map((item) => (
             <View key={item.id} style={styles_id.page}>
               <Text style={styles.h1}>{item?.name}</Text>
