@@ -2,12 +2,11 @@
  * Только для мобильных устройств
  * К сожалению, в браузере больше не открыть, выдаёт исключение
  *
- * !FIXME: Некорректно отображаются только что добавленные новые книги, после обновления всё приходит в норму
+ * ! FIXME: Не всегда сразу можно открыть только что добавленную книгу
  */
 import React, { useCallback, useEffect, useRef } from "react";
 import { useLocalSearchParams } from "expo-router";
-import { View, Text, Platform, StyleSheet } from "react-native";
-import BookDeposButton from "@/components/ui/BookDeposButton";
+import { View, Text, Platform, StyleSheet, ActivityIndicator } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { getData } from "@/components/BookDepository/BookDepository.service";
 import { books } from ".";
@@ -21,40 +20,43 @@ export default function DetailBook() {
 
   const pagerRef = useRef<PagerView>(null);
 
+  const [loading, setLoading] = React.useState(true);
+
+  /**
+   * Массив с книгами
+   */
+  const [array, setArray] = React.useState<books[]>([]);
+
   /**
    * Переход на страницу по id
    * TODO: Находит индекс записи по id
-   * @param index Индекс страницы на которую нужно перейти
    */
   const goToPage = (id: number) => {
     const index = array.findIndex((book) => book.id === id);
-    if (index !== -1) {
-      if (pagerRef.current) {
-        // pagerRef.current.setPage(index);
-        pagerRef.current.setPageWithoutAnimation(index);
-        log.debug(`(goToPage)([id]): Перешло на страницу ${index}`);
-      }
+    if (index !== -1 && pagerRef.current && array.length > 0) {
+      // pagerRef.current.setPage(index);
+      pagerRef.current.setPageWithoutAnimation(index);
+      log.debug(`(goToPage)([id]): Перешло на страницу ${index}`);
     } else log.error("Такой книги нет");
   };
-
-  /**
-   * Массив с книгой
-   */
-  const [array, setArray] = React.useState<books[]>([]);
 
   /**
    * Получает все книги
    */
   const fetchData = async () => {
-    const response = await getData();
-    if (response === undefined) {
-      router.push("/BookDepository");
+    try {
+      const response = await getData();
+      if (response === undefined) {
+        router.push("/BookDepository");
+      }
+      log.debug(
+        `(fetchData)([id]): Пользователь получил такие данные: ${response}`
+      );
+      const booksArray: books[] = JSON.parse(response as string);
+      setArray(booksArray);
+    } finally {
+      setLoading(false)
     }
-    log.debug(
-      `(fetchData)([id]): Пользователь получил такие данные: ${response}`
-    );
-    const booksArray: books[] = JSON.parse(response as string);
-    setArray(booksArray);
   };
 
   useFocusEffect(
@@ -68,6 +70,16 @@ export default function DetailBook() {
       goToPage(parseInt(id));
     }, [array])
   );
+  
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size={"large"} color={"#0000ff"} />
+      </View>
+    );
+  }
+
+  
   /**
    * Благодаря некоторым библиотекам, которые неразрывно связаны с android или ios
    * Перестало отображаться в браузере.

@@ -87,7 +87,7 @@ function BookDepository() {
         <BookDeposButton
           text="Добавить книг"
           func={async () => {
-            await addNumericBooks(20);
+            await addNumericBooks(10);
             fetchData();
           }}
         />
