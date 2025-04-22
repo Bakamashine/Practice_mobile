@@ -94,7 +94,7 @@ export default function DetailBook() {
   } else {
     return (
       <View style={styles_id.container}>
-        <PagerView
+        {/* <PagerView
           style={styles_id.container}
           ref={pagerRef}
           // key={array.length}
@@ -111,7 +111,7 @@ export default function DetailBook() {
               <BookDeposBackButton />
             </View>
           ))}
-        </PagerView>
+        </PagerView> */}
       </View>
     );
   }

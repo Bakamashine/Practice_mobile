@@ -22,6 +22,7 @@ import { log } from "@/configs/logger";
 import { books } from "../BookDepository";
 import BooksSqlite from "@/components/BookDepository/sqlite";
 
+const sqlite = new BooksSqlite;
 
 function BookDepositorySqlite() {
   /**
@@ -35,7 +36,7 @@ function BookDepositorySqlite() {
    * Статус прогрузки страницы
    * @default true
    */
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   /**
    * Статус перезагрузки для FlatList (RefreshControll)
@@ -56,18 +57,19 @@ function BookDepositorySqlite() {
     //   setLoading(false);
     // }
     
-    try {
-      const data = await BooksSqlite.getAllBooks();
-      if (data !== undefined && data !== null ) {
-        // setArray(data);
-        log.info(data)
-      }
-    } catch (err) {
-      log.error(err)
-    } finally {
-      setLoading(false)
-    }
+    // try {
+    //   const data = await BooksSqlite.getAllBooks();
+    //   if (data !== undefined && data !== null ) {
+    //     // setArray(data);
+    //     log.info(data)
+    //   }
+    // } catch (err) {
+    //   log.error(err)
+    // } finally {
+    //   setLoading(false)
+    // }
   };
+  // useEffect(() => sqlite.connectDB(), [])
 
   useFocusEffect(
     useCallback(() => {
@@ -96,9 +98,16 @@ function BookDepositorySqlite() {
         <BookDeposButton
           text="Добавить книг"
           func={async () => {
-            await BooksSqlite.generateBooks();
+            await sqlite.generateBooks()
             fetchData();
           }}
+        />
+        <BookDeposButton
+        text="Сделать миграции"
+        func={async () => {
+          await sqlite.migrate()
+          fetchData()
+        }}
         />
       </View>
     );

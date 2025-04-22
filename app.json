@@ -35,7 +35,8 @@
           "backgroundColor": "#ffffff"
         }
       ],
-        "@prisma/react-native"
+      "expo-sqlite"
+
     ],
 
     "experiments": {
