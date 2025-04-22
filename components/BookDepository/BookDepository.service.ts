@@ -184,7 +184,7 @@ export const getMaxId = async () => {
  * @param date Передаваемая дата для форматирования
  * @returns Отформатированая дата
  */
-export const date_to_day = (date: Date) => {
+export const date_to_day = (date: Date = new Date()) => {
   let week = [
     "Воскресенье",
     "Понедельник",
