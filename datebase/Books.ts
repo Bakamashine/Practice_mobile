@@ -15,7 +15,7 @@ class Books extends MainClass {
       for (let i = 0; i < num; i++) {
         let name = `book${i}`;
         await this._db?.runAsync(`
-                insert into books (name, date, status) values ('${name}', '${date_to_day()}', '${false}')
+                insert into books (name, date, status) values ('${name}', '${date_to_day()}', 0)
             `);
         log.debug("(generateBooks) Была добавлена книга")
       }

@@ -40,16 +40,33 @@ class MainClass extends ConnectDB {
     }
   }
 
-async DropTable(table: string) {
-    try  {
-        await this.connect();
-        const result = await this._db?.runAsync(`DROP table ${table}`)
-        log.debug("Результат удаления: ", result)
+  /**
+   * Удаление таблицы по имени
+   * @param table Имя удаляемой таблицы
+   */
+  async DropTable(table: string) {
+    try {
+      await this.connect();
+      const result = await this._db?.runAsync(`DROP table ${table}`);
+      log.debug("Результат удаления: ", result);
     } catch (err) {
-        log.error(err)
+      log.error(err);
     }
-}
+  }
 
+  /**
+   * Очистка таблицы
+   * @param table Имя очищаемой очищаемой таблицы
+   */
+  async DeleteTable(table: string) {
+    try {
+      await this.connect();
+      const result = await this._db?.runAsync(`DELETE from ${table}`);
+      log.debug("Результат очистки таблицы: ", result);
+    } catch (err) {
+      log.error(err);
+    }
+  }
 }
 
 export default MainClass;

@@ -86,20 +86,25 @@ export default function BookDeposSqlite() {
                   fetchData();
                 }}
               /> */}
-            </View>
-          }
-        />
-      </View>
-
-      {/* <BookDeposButton text="Сделать миграции" func={async () => await sqlite.migrate()} />
-        <BookDeposButton text="Удалить таблицу" func={async () => await sqlite.DropTable("books")} />
+      <BookDeposButton text="Сделать миграции" func={async () => await sqlite.migrate()} />
+        <BookDeposButton text="Удалить таблицу с книгами" func={async () => await sqlite.DropTable("books")} />
       <BookDeposButton
         text="Добавить книги"
         func={async () => {
           await sqlite.generateBooks();
           await fetchData();
         }}
-      /> */}
+      />
+                            
+        <BookDeposButton text="Удалить все книги" func={async () => {
+            await sqlite.DeleteTable("books");
+            await fetchData()
+        }} />
+            </View>
+          }
+        />
+      </View>
+
     </View>
   );
 }
