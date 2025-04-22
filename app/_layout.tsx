@@ -45,8 +45,11 @@ function Layout() {
         />
 
         <Drawer.Screen
-          name="BookDepository(sqlite)/index"
-          options={{ headerTitle: "BookDepository(sqlite)" }}
+          name="BookDeposSqlite/index"
+          options={{
+            drawerLabel: "BookDepository(sqlite)",
+            headerTitle: "BookDepository(sqlite)",
+          }}
         />
       </Drawer>
     </GestureHandlerRootView>

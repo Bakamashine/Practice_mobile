@@ -17,12 +17,6 @@ import {
 import styles from "@/components/BookDepository/styles";
 import BookDeposButton from "@/components/ui/BookDeposButton";
 import { router } from "expo-router";
-import {
-  getData,
-  DeleteAll,
-  deleteBook,
-  addNumericBooks,
-} from "@/components/BookDepository/BookDepository.service";
 import { useFocusEffect } from "expo-router";
 import { log } from "@/configs/logger";
 import { books } from "../BookDepository";
@@ -102,7 +96,7 @@ function BookDepositorySqlite() {
         <BookDeposButton
           text="Добавить книг"
           func={async () => {
-            await addNumericBooks(10);
+            await BooksSqlite.generateBooks();
             fetchData();
           }}
         />
@@ -119,13 +113,13 @@ function BookDepositorySqlite() {
               <Text>Название книги: {item.name}</Text>
               <Text>Дата добавление книги: {item.date}</Text>
               <Text>Прочтена? {item.status ? "Да" : "Нет"}</Text>
-              <BookDeposButton
+              {/* <BookDeposButton
                 text="Удалить книгу"
                 func={async () => {
                   await deleteBook(item.id);
                   fetchData();
                 }}
-              />
+              /> */}
               <BookDeposButton
                 text="Посмотреть книгу подробнее"
                 func={() =>
@@ -163,14 +157,14 @@ function BookDepositorySqlite() {
                 text="Создать новую книгу"
                 func={() => router.replace("/BookDepository/add")}
               />
-              <BookDeposButton
+              {/* <BookDeposButton
                 text="Удалить все книги"
                 func={async () => {
                   await DeleteAll();
                   setArray([]);
                   fetchData();
                 }}
-              />
+              /> */}
             </View>
           }
         />
