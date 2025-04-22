@@ -15,6 +15,11 @@ export default function CustomDrawerComponents(props: any) {
         label={"BookDepository"}
         onPress={() => router.replace("/BookDepository")}
       />
+
+      <DrawerItem
+        label={"BookDeposSqlite"}
+        onPress={() => router.replace("/BookDeposSqlite")}
+      />
     </DrawerContentScrollView>
   );
 }

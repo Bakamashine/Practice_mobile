@@ -43,6 +43,13 @@ function Layout() {
             headerTitle: "Подробная информация книги",
           }}
         />
+        
+        <Drawer.Screen
+        name="BookDeposSqlite/index"
+        options={{
+          headerTitle: "BookDeposSqlite"
+        }}
+        />
       </Drawer>
     </GestureHandlerRootView>
   );
