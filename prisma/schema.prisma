@@ -22,6 +22,6 @@ datasource db {
 model Books {
   id Int @id @default(autoincrement())
   title String 
-  date DateTime 
+  date String 
   readed Boolean
 }

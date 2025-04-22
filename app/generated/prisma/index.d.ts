@@ -892,14 +892,14 @@ export namespace Prisma {
   export type BooksMinAggregateOutputType = {
     id: number | null
     title: string | null
-    date: Date | null
+    date: string | null
     readed: boolean | null
   }
 
   export type BooksMaxAggregateOutputType = {
     id: number | null
     title: string | null
-    date: Date | null
+    date: string | null
     readed: boolean | null
   }
 
@@ -1031,7 +1031,7 @@ export namespace Prisma {
   export type BooksGroupByOutputType = {
     id: number
     title: string
-    date: Date
+    date: string
     readed: boolean
     _count: BooksCountAggregateOutputType | null
     _avg: BooksAvgAggregateOutputType | null
@@ -1090,7 +1090,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       title: string
-      date: Date
+      date: string
       readed: boolean
     }, ExtArgs["result"]["books"]>
     composites: {}
@@ -1517,7 +1517,7 @@ export namespace Prisma {
   interface BooksFieldRefs {
     readonly id: FieldRef<"Books", 'Int'>
     readonly title: FieldRef<"Books", 'String'>
-    readonly date: FieldRef<"Books", 'DateTime'>
+    readonly date: FieldRef<"Books", 'String'>
     readonly readed: FieldRef<"Books", 'Boolean'>
   }
     
@@ -1932,13 +1932,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'DateTime'
-   */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-  /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -1961,7 +1954,7 @@ export namespace Prisma {
     NOT?: BooksWhereInput | BooksWhereInput[]
     id?: IntFilter<"Books"> | number
     title?: StringFilter<"Books"> | string
-    date?: DateTimeFilter<"Books"> | Date | string
+    date?: StringFilter<"Books"> | string
     readed?: BoolFilter<"Books"> | boolean
   }
 
@@ -1978,7 +1971,7 @@ export namespace Prisma {
     OR?: BooksWhereInput[]
     NOT?: BooksWhereInput | BooksWhereInput[]
     title?: StringFilter<"Books"> | string
-    date?: DateTimeFilter<"Books"> | Date | string
+    date?: StringFilter<"Books"> | string
     readed?: BoolFilter<"Books"> | boolean
   }, "id">
 
@@ -2000,53 +1993,53 @@ export namespace Prisma {
     NOT?: BooksScalarWhereWithAggregatesInput | BooksScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Books"> | number
     title?: StringWithAggregatesFilter<"Books"> | string
-    date?: DateTimeWithAggregatesFilter<"Books"> | Date | string
+    date?: StringWithAggregatesFilter<"Books"> | string
     readed?: BoolWithAggregatesFilter<"Books"> | boolean
   }
 
   export type BooksCreateInput = {
     title: string
-    date: Date | string
+    date: string
     readed: boolean
   }
 
   export type BooksUncheckedCreateInput = {
     id?: number
     title: string
-    date: Date | string
+    date: string
     readed: boolean
   }
 
   export type BooksUpdateInput = {
     title?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: StringFieldUpdateOperationsInput | string
     readed?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type BooksUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: StringFieldUpdateOperationsInput | string
     readed?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type BooksCreateManyInput = {
     id?: number
     title: string
-    date: Date | string
+    date: string
     readed: boolean
   }
 
   export type BooksUpdateManyMutationInput = {
     title?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: StringFieldUpdateOperationsInput | string
     readed?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type BooksUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: StringFieldUpdateOperationsInput | string
     readed?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -2073,17 +2066,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -2153,20 +2135,6 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
@@ -2177,10 +2145,6 @@ export namespace Prisma {
 
   export type StringFieldUpdateOperationsInput = {
     set?: string
-  }
-
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -2218,17 +2182,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -2278,20 +2231,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {

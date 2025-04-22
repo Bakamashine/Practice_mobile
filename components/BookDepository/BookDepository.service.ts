@@ -2,20 +2,21 @@ import { books } from "@/app/BookDepository";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { log } from "@/configs/logger";
 
+export const fabric = (id: number) => {
+  let name = `book${id}`;
+  return {
+    id,
+    name,
+    status: false,
+    date: date_to_day(new Date()),
+  };
+};
+
 /**
  * Фабрика, которая позволяет добавить 100 книг в хранилище
  * @param num Кол-во добавляемых книг
  */
 export const addNumericBooks = async (num: number = 100) => {
-  const fabric = (id: number) => {
-    let name = `book${id}`;
-    return {
-      id,
-      name,
-      status: false,
-      date: date_to_day(new Date()),
-    };
-  };
   for (let i = 0; i<num; i++) {
     await storeData(fabric(i))
   }
@@ -184,7 +185,7 @@ export const getMaxId = async () => {
  * @param date Передаваемая дата для форматирования
  * @returns Отформатированая дата
  */
-export const date_to_day = (date: Date) => {
+export const date_to_day = (date: Date = new Date()) => {
   let week = [
     "Воскресенье",
     "Понедельник",

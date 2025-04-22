@@ -26,6 +26,7 @@ import {
 import { useFocusEffect } from "expo-router";
 import { log } from "@/configs/logger";
 import { books } from "../BookDepository";
+import BooksSqlite from "@/components/BookDepository/sqlite";
 
 
 function BookDepositorySqlite() {
@@ -51,14 +52,26 @@ function BookDepositorySqlite() {
    * Получение данных
    */
   const fetchData = async () => {
+    // try {
+    //   const data = await getData();
+    //   log.debug(`(fetchData): Полученные данные: ${data}`);
+    //   setArray(data ? JSON.parse(data) : []);
+    // } catch (err) {
+    //   console.error(err);
+    // } finally {
+    //   setLoading(false);
+    // }
+    
     try {
-      const data = await getData();
-      log.debug(`(fetchData): Полученные данные: ${data}`);
-      setArray(data ? JSON.parse(data) : []);
+      const data = await BooksSqlite.getAllBooks();
+      if (data !== undefined && data !== null ) {
+        // setArray(data);
+        log.info(data)
+      }
     } catch (err) {
-      console.error(err);
+      log.error(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   };
 
