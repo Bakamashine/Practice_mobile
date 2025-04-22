@@ -1,25 +1,37 @@
+/**
+ * В отличие от обычного BookDepository,
+ * Хранение книг происходит в sqlite
+ * Для этого используется библиотека expo-sqlite
+ */
 import React, { useCallback } from "react";
-import { View, Text } from "react-native";
+import { View, Text, FlatList, RefreshControl, ActivityIndicator } from "react-native";
 import BookDeposButton from "@/components/ui/BookDeposButton";
 import Books from "@/datebase/Books";
 import { log } from "@/configs/logger";
 import { useFocusEffect } from "expo-router";
-import { books } from "../BookDepository";
+import { books, BookDepository_styles } from "../BookDepository";
+import styles from "@/components/BookDepository/styles";
 
 export default function BookDeposSqlite() {
   const sqlite = new Books();
 
   const [array, setArray] = React.useState<books[]>([]);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
 
   const fetchData = async () => {
-    const data: unknown[] | undefined = await sqlite.getData("books");
-    log.debug(
-      "(fetchData)(BookDeposSqlite) Полученные данные: ",
-      JSON.stringify(data)
-    );
-    if (data !== undefined) {
-      const booksArray = data as books[];
-      setArray(booksArray);
+    try {
+      const data: unknown[] | undefined = await sqlite.getData("books");
+      log.debug(
+        "(fetchData)(BookDeposSqlite) Полученные данные: ",
+        JSON.stringify(data)
+      );
+      if (data !== undefined) {
+        const booksArray = data as books[];
+        setArray(booksArray);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,9 +40,58 @@ export default function BookDeposSqlite() {
       fetchData();
     }, [])
   );
+    
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size={"large"} color={"#0000ff"} />
+      </View>
+    )
+  }
   return (
     <View>
-      <BookDeposButton text="Сделать миграции" func={async () => await sqlite.migrate()} />
+      <View>
+        <FlatList
+          data={array}
+          renderItem={({ item }) => (
+            <View key={item.id} style={BookDepository_styles.section}>
+              <Text>Id книги: {item.id}</Text>
+              <Text>Название книги: {item.name}</Text>
+              <Text>Дата добавление книги: {item.date}</Text>
+              <Text>Прочтена? {item.status ? "Да" : "Нет"}</Text>
+            </View>
+          )}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={fetchData} />
+          }
+          ListHeaderComponent={
+            <View>
+              <Text style={styles.h1}>Ваши книги: </Text>
+              <Text style={{ textAlign: "center" }}>
+                (для перезагрузки страницы, свайпните вверх)
+              </Text>
+            </View>
+          }
+          ListFooterComponent={
+            <View style={styles.center}>
+              {/* <BookDeposButton
+                text="Создать новую книгу"
+                func={() => router.replace("/BookDepository/add")}
+              />
+              <BookDeposButton
+                text="Удалить все книги"
+                func={async () => {
+                  await DeleteAll();
+                  setArray([]);
+                  fetchData();
+                }}
+              /> */}
+            </View>
+          }
+        />
+      </View>
+
+      {/* <BookDeposButton text="Сделать миграции" func={async () => await sqlite.migrate()} />
         <BookDeposButton text="Удалить таблицу" func={async () => await sqlite.DropTable("books")} />
       <BookDeposButton
         text="Добавить книги"
@@ -38,12 +99,7 @@ export default function BookDeposSqlite() {
           await sqlite.generateBooks();
           await fetchData();
         }}
-      />
-      <View>
-        <Text>{array[0]?.name}</Text>
-        <Text>{array[1]?.name}</Text>
-                <Text>Hel</Text>
-      </View>
+      /> */}
     </View>
   );
 }

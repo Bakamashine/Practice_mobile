@@ -171,7 +171,7 @@ function BookDepository() {
 
 export default BookDepository;
 
-const BookDepository_styles = StyleSheet.create({
+export const BookDepository_styles = StyleSheet.create({
   section: {
     borderBlockColor: "black",
     borderWidth: 1,
