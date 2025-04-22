@@ -37,6 +37,8 @@ export default function BookDeposSqlite() {
         const booksArray = data as books[];
         setArray(booksArray);
       }
+    } catch (err) {
+      log.error(err);
     } finally {
       setLoading(false);
     }
@@ -66,6 +68,33 @@ export default function BookDeposSqlite() {
               <Text>Название книги: {item.name}</Text>
               <Text>Дата добавление книги: {item.date}</Text>
               <Text>Прочтена? {item.status ? "Да" : "Нет"}</Text>
+              <View>
+                {/* <BookDeposButton
+                text="Удалить книгу"
+                func={async () => {
+                  await deleteBook(item.id);
+                  fetchData();
+                }}
+              /> */}
+                {/* <BookDeposButton
+                text="Посмотреть книгу подробнее"
+                func={() =>
+                  router.push({
+                    pathname: "/BookDepository/[id]",
+                    params: { id: item.id },
+                  })
+                }
+              /> */}
+                <BookDeposButton
+                  text="Изменить дату прочтения"
+                  func={() =>
+                    router.push({
+                      pathname: "/BookDeposSqlite/redact",
+                      params: { id: item.id },
+                    })
+                  }
+                />
+              </View>
             </View>
           )}
           refreshControl={
@@ -81,19 +110,10 @@ export default function BookDeposSqlite() {
           }
           ListFooterComponent={
             <View style={styles.center}>
-              {/* <BookDeposButton
-                text="Создать новую книгу"
-                func={() => router.replace("/BookDepository/add")}
-              />
               <BookDeposButton
-                text="Удалить все книги"
-                func={async () => {
-                  await DeleteAll();
-                  setArray([]);
-                  fetchData();
-                }}
-              /> */}
-              <BookDeposButton text="Добавить новую книгу" func={() => router.replace("/BookDeposSqlite/add")} />
+                text="Добавить новую книгу"
+                func={() => router.replace("/BookDeposSqlite/add")}
+              />
               <BookDeposButton
                 text="Сделать миграции"
                 func={async () => await sqlite.migrate()}

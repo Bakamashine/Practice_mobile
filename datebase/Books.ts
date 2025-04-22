@@ -27,7 +27,7 @@ class Books extends MainClass {
       await this.connect();
       for (let i = 0; i < num; i++) {
         let name = `book${i}`;
-        await this._db?.runAsync(`
+        await this._db?.getAllAsync(`
                 insert into ${
                   this.#table
                 } (name, date, status) values ('${name}', '${date_to_day()}', 0)
@@ -51,7 +51,7 @@ class Books extends MainClass {
         elements.name
       }', '${elements.date}', ${elements.status})
             `);
-      return result;
+      log.debug(result)
     } catch (err) {
       log.error(err);
     }
