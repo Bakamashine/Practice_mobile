@@ -9,7 +9,7 @@ export default function BookDeposSqlite() {
         <View>
             <BookDeposButton
                 text='Сделать миграции'
-                func={() => sqlite.migrate}
+                func={() => sqlite.migrate()}
             />
         </View>
     )
