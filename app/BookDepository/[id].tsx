@@ -2,7 +2,7 @@
  * Только для мобильных устройств
  * К сожалению, в браузере больше не открыть, выдаёт исключение
  *
- * ! FIXME: Не всегда сразу можно открыть только что добавленную книгу
+ * !FIXME: Не всегда сразу можно открыть только что добавленную книгу
  */
 import React, { useCallback, useEffect, useRef } from "react";
 import { useLocalSearchParams } from "expo-router";
@@ -83,7 +83,7 @@ export default function DetailBook() {
   /**
    * Благодаря некоторым библиотекам, которые неразрывно связаны с android или ios
    * Перестало отображаться в браузере.
-   * ! FIXME: Этот хак не работает
+   * !FIXME: Этот хак не работает
    */
   if (Platform.OS === "web") {
     return (
