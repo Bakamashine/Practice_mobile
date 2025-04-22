@@ -4,6 +4,10 @@ import ConnectDB from "./ConnectDb";
 import { log } from "@/configs/logger";
 
 class MainClass extends ConnectDB {
+    
+    /**
+     * Система миграций
+     */
   async migrate() {
     try {
       await this.connect();

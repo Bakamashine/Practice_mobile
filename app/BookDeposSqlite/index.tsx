@@ -4,7 +4,14 @@
  * Для этого используется библиотека expo-sqlite
  */
 import React, { useCallback } from "react";
-import { View, Text, FlatList, RefreshControl, ActivityIndicator } from "react-native";
+import { router } from "expo-router";
+import {
+  View,
+  Text,
+  FlatList,
+  RefreshControl,
+  ActivityIndicator,
+} from "react-native";
 import BookDeposButton from "@/components/ui/BookDeposButton";
 import Books from "@/datebase/Books";
 import { log } from "@/configs/logger";
@@ -40,13 +47,13 @@ export default function BookDeposSqlite() {
       fetchData();
     }, [])
   );
-    
+
   if (loading) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size={"large"} color={"#0000ff"} />
       </View>
-    )
+    );
   }
   return (
     <View>
@@ -86,25 +93,34 @@ export default function BookDeposSqlite() {
                   fetchData();
                 }}
               /> */}
-      <BookDeposButton text="Сделать миграции" func={async () => await sqlite.migrate()} />
-        <BookDeposButton text="Удалить таблицу с книгами" func={async () => await sqlite.DropTable("books")} />
-      <BookDeposButton
-        text="Добавить книги"
-        func={async () => {
-          await sqlite.generateBooks();
-          await fetchData();
-        }}
-      />
-                            
-        <BookDeposButton text="Удалить все книги" func={async () => {
-            await sqlite.DeleteTable("books");
-            await fetchData()
-        }} />
+              <BookDeposButton text="Добавить новую книгу" func={() => router.replace("/BookDeposSqlite/add")} />
+              <BookDeposButton
+                text="Сделать миграции"
+                func={async () => await sqlite.migrate()}
+              />
+              <BookDeposButton
+                text="Удалить таблицу с книгами"
+                func={async () => await sqlite.DropTable("books")}
+              />
+              <BookDeposButton
+                text="Добавить книги"
+                func={async () => {
+                  await sqlite.generateBooks();
+                  await fetchData();
+                }}
+              />
+
+              <BookDeposButton
+                text="Удалить все книги"
+                func={async () => {
+                  await sqlite.DeleteTable("books");
+                  await fetchData();
+                }}
+              />
             </View>
           }
         />
       </View>
-
     </View>
   );
 }
