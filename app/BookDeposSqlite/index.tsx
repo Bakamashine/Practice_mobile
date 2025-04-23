@@ -4,7 +4,7 @@
  * Для этого используется библиотека expo-sqlite
  */
 import React, { useCallback } from "react";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import {
   View,
   Text,
@@ -88,10 +88,11 @@ export default function BookDeposSqlite() {
                 <BookDeposButton
                   text="Посмотреть книгу "
                   func={() => {
-                    router.push({
-                      pathname: "/BookDeposSqlite/[id]",
-                      params: { id: item.id },
-                    });
+                    // router.push({
+                    //   pathname: "/BookDeposSqlite/[id]",
+                    //   params: { id: item.id },
+                    // });
+                    router.push(`/BookDeposSqlite/${item.id}`)
                   }}
                 />
               </View>

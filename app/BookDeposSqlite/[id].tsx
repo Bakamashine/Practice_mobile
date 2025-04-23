@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { useGlobalSearchParams, useLocalSearchParams } from "expo-router";
 import {
   View,
   Text,
@@ -17,7 +17,7 @@ import BookDeposButton from "@/components/ui/BookDeposButton";
 import { onShare } from "@/datebase/Share";
 
 export default function DetailBook() {
-  let { id } = useLocalSearchParams<{ id: string }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
 
   const books = new Books();
   const pagerRef = useRef<PagerView>(null);
@@ -38,14 +38,20 @@ export default function DetailBook() {
    * Переход на страницу по id
    * TODO: Находит индекс записи по id
    */
-  const goToPage = (id: number) => {
-    const index = array.findIndex((book) => book.id === id);
-    if (index !== -1 && pagerRef.current && array.length > 0) {
-      pagerRef.current.setPageWithoutAnimation(index);
-      log.debug(
-        `(BooksDeposSqlite)(goToPage)([id]): Перешло на страницу ${index}`
-      );
-    } else log.error("Такой книги нет");
+  const goToPage = async (id: number, array: books[]) => {
+    try {
+      const index = array.findIndex((book) => book.id === id);
+      if (index !== -1 && pagerRef.current && array.length > 0) {
+        pagerRef.current.setPage(index);
+        log.debug(
+          `(BooksDeposSqlite)(goToPage)([id]): Перешло на страницу ${index}`
+        );
+      } else throw new Error("Такой книги нет");
+    } catch (err) {
+      if (err instanceof Error) {
+        log.error(err);
+      }
+    }
   };
 
   /**
@@ -58,27 +64,18 @@ export default function DetailBook() {
         const BooksArray = response as books[];
         log.debug("(BookDeposSqlite)[id] Полученные данные: ", BooksArray);
         setArray(BooksArray);
+        goToPage(parseInt(id), BooksArray);
       }
     } catch (err) {
       log.error(err);
-    } finally {
-      setLoading(false);
-    }
+      } finally {
+        setLoading(false);
+      }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchData();
-    }, [id])
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      if (!loading && array.length > 0) {
-        goToPage(parseInt(id));
-      }
-    }, [loading, array])
-  );
+  useEffect(() => {
+    fetchData();
+  }, [id]);
 
   if (loading) {
     return (
@@ -101,7 +98,6 @@ export default function DetailBook() {
           style={styles_id.container}
           ref={pagerRef}
           onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}
-          // key={array.length}
         >
           {array.map((item) => (
             <View key={item.id} style={styles_id.page}>
