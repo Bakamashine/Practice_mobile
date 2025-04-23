@@ -86,7 +86,13 @@ export default function BookDeposSqlite() {
                   }
                 />
                 <BookDeposButton
-                text="Посмотреть книгу "
+                  text="Посмотреть книгу "
+                  func={() => {
+                    router.push({
+                      pathname: "/BookDeposSqlite/[id]",
+                      params: { id: item.id },
+                    });
+                  }}
                 />
               </View>
             </View>

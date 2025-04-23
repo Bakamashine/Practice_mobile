@@ -8,12 +8,12 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { router, useFocusEffect } from "expo-router";
-import { getData } from "@/components/BookDepository/BookDepository.service";
 import Books, { books } from "@/datebase/Books";
 import styles from "@/components/BookDepository/styles";
 import { log } from "@/configs/logger";
 import PagerView from "react-native-pager-view";
-import BookDeposBackButton from "@/components/BookDepository/BookDeposBackButton";
+import BookDeposSqliteBackButton from "@/components/BookDepository/BookDeposSqliteBackButton";
+import BookDeposButton from "@/components/ui/BookDeposButton";
 
 export default function DetailBook() {
   let { id } = useLocalSearchParams<{ id: string }>();
@@ -35,48 +35,43 @@ export default function DetailBook() {
   const goToPage = (id: number) => {
     const index = array.findIndex((book) => book.id === id);
     if (index !== -1 && pagerRef.current && array.length > 0) {
-      // pagerRef.current.setPage(index);
       pagerRef.current.setPageWithoutAnimation(index);
-      log.debug(`(goToPage)([id]): Перешло на страницу ${index}`);
+      log.debug(
+        `(BooksDeposSqlite)(goToPage)([id]): Перешло на страницу ${index}`
+      );
     } else log.error("Такой книги нет");
   };
 
   /**
    * Получает все книги
    */
-  const fetchData = async (table?: string) => {
+  const fetchData = async () => {
     try {
       const response = await books.getData();
       if (response !== undefined) {
         const BooksArray = response as books[];
+        log.debug("(BookDeposSqlite)[id] Полученные данные: ", BooksArray);
         setArray(BooksArray);
       }
     } catch (err) {
       log.error(err);
+    } finally {
+      setLoading(false);
     }
-    // try {
-    //   const response = await getData();
-    //   log.debug(
-    //     `(BookDeposSqlite)([id]): Пользователь получил такие данные: ${response}`
-    //   );
-    //   const booksArray: books[] = JSON.parse(response as string);
-    //   setArray(booksArray);
-    // } finally {
-    //   setLoading(false)
-    // }
   };
 
   useFocusEffect(
     useCallback(() => {
       fetchData();
+    //   goToPage(parseInt(id));
     }, [id])
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      goToPage(parseInt(id));
-    }, [array])
-  );
+    useFocusEffect(
+      useCallback(() => {
+        goToPage(parseInt(id));
+      }, [array])
+    );
 
   if (loading) {
     return (
@@ -98,7 +93,7 @@ export default function DetailBook() {
         <PagerView
           style={styles_id.container}
           ref={pagerRef}
-          // key={array.length}
+          key={array.length}
         >
           {array.map((item) => (
             <View key={item.id} style={styles_id.page}>
@@ -109,7 +104,10 @@ export default function DetailBook() {
               <Text style={styles.textCenter}>
                 Прочтена? {item?.status ? "Да" : "Нет"}
               </Text>
-              <BookDeposBackButton />
+              <BookDeposSqliteBackButton />
+                <BookDeposButton
+                text='Отправить отчёт о прочтении'
+                />
             </View>
           ))}
         </PagerView>

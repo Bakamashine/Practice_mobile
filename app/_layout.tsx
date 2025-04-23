@@ -43,12 +43,33 @@ function Layout() {
             headerTitle: "Подробная информация книги",
           }}
         />
-        
+
         <Drawer.Screen
-        name="BookDeposSqlite/index"
-        options={{
-          headerTitle: "BookDeposSqlite"
-        }}
+          name="BookDeposSqlite/index"
+          options={{
+            headerTitle: "BookDeposSqlite",
+          }}
+        />
+
+        <Drawer.Screen
+          name="BookDeposSqlite/[id]"
+          options={{
+            headerTitle: "Подробная информация книги (sqlite)",
+          }}
+        />
+
+        <Drawer.Screen
+          name="BookDeposSqlite/redact"
+          options={{
+            headerTitle: "Изменение даты книги (sqlite)",
+          }}
+        />
+
+        <Drawer.Screen
+          name="BookDeposSqlite/add"
+          options={{
+            headerTitle: "Добавление книги (sqlite)",
+          }}
         />
       </Drawer>
     </GestureHandlerRootView>
