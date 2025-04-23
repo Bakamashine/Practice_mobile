@@ -4,6 +4,16 @@ import ConnectDB from "./ConnectDb";
 import { log } from "@/configs/logger";
 
 class MainClass extends ConnectDB {
+  #table?: string;
+
+  /**
+   * Сеттер для таблицы
+   * @param table Название таблицы
+   */
+  setTable(table: string) {
+    this.#table = table;
+  }
+
   /**
    * Система миграций
    */
@@ -34,11 +44,11 @@ class MainClass extends ConnectDB {
    * @param table Таблица из которой необходимо извлечь записи
    * @returns  Значение из таблицы
    */
-  async getData(table: string) {
+  async getData(table?: string) {
     try {
       await this.connect();
       const response = await this._db?.getAllAsync(`
-            select * from ${table}
+            select * from ${this.#checkTable(table)}
         `);
       if (response !== null) {
         return response;
@@ -55,19 +65,15 @@ class MainClass extends ConnectDB {
    * @param param2 Объект со значениямм: one - поле в котором нужно сделать замену, two - сама замена
    */
   async updateRecord(
-    table: string,
     { id, value }: { id: string; value: string | number },
-    { one, two }: { one: string; two: string | number }
+    { one, two }: { one: string; two: string | number },
+    table?: string
   ) {
     try {
       await this.connect();
-      //   const result = await this._db?.runAsync(`
-      //     UPDATE ${table}
-      //     SET ${one} = '${typeof two == "string" ? `'${two}'` : `${two}`}'
-      //     WHERE ${id} = ${typeof value == "string" ? `'${value}'` : `${value}`}
       const result = await this._db?.runAsync(
         `
-        UPDATE ${table} 
+        UPDATE ${this.#checkTable(table)} 
         SET ${one} = ?
         WHERE ${id} = ?
 `,
@@ -83,10 +89,12 @@ class MainClass extends ConnectDB {
    * Удаление таблицы по имени
    * @param table Имя удаляемой таблицы
    */
-  async DropTable(table: string) {
+  async DropTable(table?: string) {
     try {
       await this.connect();
-      const result = await this._db?.runAsync(`DROP table ${table}`);
+      const result = await this._db?.runAsync(
+        `DROP table ${this.#checkTable(table)}`
+      );
       log.debug("Результат удаления: ", result);
     } catch (err) {
       log.error(err);
@@ -97,13 +105,36 @@ class MainClass extends ConnectDB {
    * Очистка таблицы
    * @param table Имя очищаемой очищаемой таблицы
    */
-  async DeleteTable(table: string) {
+  async DeleteTable(table?: string) {
     try {
       await this.connect();
-      const result = await this._db?.runAsync(`DELETE from ${table}`);
+      const result = await this._db?.runAsync(
+        `DELETE from ${this.#checkTable(table)}`
+      );
       log.debug("Результат очистки таблицы: ", result);
     } catch (err) {
       log.error(err);
+    }
+  }
+
+  /**
+   * Если пользователь не передал значение в table (необязательное)
+   * то будет возврат this.#table (его можно передать через сеттер  setTable)
+   * Но если эти this.#table пустое, то будет вызвано исключение
+   * @param table Название таблицы
+   * @returns
+   */
+  #checkTable(table?: string) {
+    try {
+      if (table === undefined || table === null) {
+        if (this.#table === undefined) {
+          throw new Error("Таблица не заданана, используйте метод setTable");
+        } else return this.#table;
+      } else return table;
+    } catch (err) {
+      if (err instanceof Error) {
+        log.error(err);
+      }
     }
   }
 
@@ -112,11 +143,11 @@ class MainClass extends ConnectDB {
    * @param table Таблица из которой необходимо взять запись
    * @param id ID по которому она будет искаться
    */
-  async getRecordForId(table: string, id: number) {
+  async getRecordForId(id: number, table?: string) {
     try {
       await this.connect();
       const result = await this._db?.getFirstAsync(`
-          select * from ${table} where id = ${id}
+          select * from ${this.#checkTable(table)} where id = ${id}
         `);
       log.debug(result);
       if (result !== undefined) {
@@ -132,12 +163,12 @@ class MainClass extends ConnectDB {
    * @param table Имя таблицы в которой будет удалена запись
    * @param id ID по которому будет удалена запись
    */
-  async DeleteRecord(table: string, id: number) {
+  async DeleteRecord(id: number, table?: string) {
     try {
       await this.connect();
       const result = await this._db?.runAsync(
         `
-          delete from ${table} where id = ?
+          delete from ${this.#checkTable(table)} where id = ?
         `,
         id
       );

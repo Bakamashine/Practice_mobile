@@ -46,7 +46,7 @@ export default function redact() {
    */
   const fetchData = async (id: number) => {
     try {
-      const response = await book.getRecordForId("books", id);
+      const response = await book.getRecordForId(id, "books");
       log.debug(
         `(BookDeposSqlite/redact): Пользователь получил такую запись: ${JSON.stringify(
           response
@@ -77,7 +77,6 @@ export default function redact() {
     const currentDate = selectedDate;
     // await updateDate(parseInt(id), currentDate as Date);
     await book.updateRecord(
-      "books",
       {
         id: "id",
         value: parseInt(id),
@@ -85,7 +84,8 @@ export default function redact() {
       {
         one: "date",
         two: date_to_day(currentDate),      
-      }
+      },
+      "books",
     );
     currentDate !== undefined ? setDate(currentDate) : null;
   };

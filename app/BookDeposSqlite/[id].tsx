@@ -1,15 +1,15 @@
-/**
- * Только для мобильных устройств
- * К сожалению, в браузере больше не открыть, выдаёт исключение
- *
- * !FIXME: Не всегда сразу можно открыть только что добавленную книгу
- */
 import React, { useCallback, useEffect, useRef } from "react";
 import { useLocalSearchParams } from "expo-router";
-import { View, Text, Platform, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  Platform,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { getData } from "@/components/BookDepository/BookDepository.service";
-import { books } from ".";
+import Books, { books } from "@/datebase/Books";
 import styles from "@/components/BookDepository/styles";
 import { log } from "@/configs/logger";
 import PagerView from "react-native-pager-view";
@@ -18,6 +18,7 @@ import BookDeposBackButton from "@/components/BookDepository/BookDeposBackButton
 export default function DetailBook() {
   let { id } = useLocalSearchParams<{ id: string }>();
 
+  const books = new Books();
   const pagerRef = useRef<PagerView>(null);
 
   const [loading, setLoading] = React.useState(true);
@@ -43,20 +44,26 @@ export default function DetailBook() {
   /**
    * Получает все книги
    */
-  const fetchData = async () => {
+  const fetchData = async (table?: string) => {
     try {
-      const response = await getData();
-      if (response === undefined) {
-        router.push("/BookDepository");
+      const response = await books.getData();
+      if (response !== undefined) {
+        const BooksArray = response as books[];
+        setArray(BooksArray);
       }
-      log.debug(
-        `(fetchData)([id]): Пользователь получил такие данные: ${response}`
-      );
-      const booksArray: books[] = JSON.parse(response as string);
-      setArray(booksArray);
-    } finally {
-      setLoading(false)
+    } catch (err) {
+      log.error(err);
     }
+    // try {
+    //   const response = await getData();
+    //   log.debug(
+    //     `(BookDeposSqlite)([id]): Пользователь получил такие данные: ${response}`
+    //   );
+    //   const booksArray: books[] = JSON.parse(response as string);
+    //   setArray(booksArray);
+    // } finally {
+    //   setLoading(false)
+    // }
   };
 
   useFocusEffect(
@@ -70,7 +77,7 @@ export default function DetailBook() {
       goToPage(parseInt(id));
     }, [array])
   );
-  
+
   if (loading) {
     return (
       <View style={styles.container}>
@@ -79,12 +86,6 @@ export default function DetailBook() {
     );
   }
 
-  
-  /**
-   * Благодаря некоторым библиотекам, которые неразрывно связаны с android или ios
-   * Перестало отображаться в браузере.
-   * !FIXME: Этот хак не работает
-   */
   if (Platform.OS === "web") {
     return (
       <View style={styles.container}>

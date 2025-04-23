@@ -39,6 +39,25 @@ class Books extends MainClass {
     }
   }
 
+
+  /**
+   * Получение всех книг из БД
+   * @returns Все книги
+   */
+  async getData(): Promise<unknown[] | undefined> {
+    try {
+      await this.connect();
+      const response = await this._db?.getAllAsync(`
+            select * from books
+        `);
+      if (response !== null) {
+        return response;
+      } else throw new Error("Нет записей");
+    } catch (err) {
+      log.error(err);
+    }
+  }
+  
   /**
    * Добавляет книгу
    * @param elements Передаваемые значения по интерфейсу books

@@ -28,7 +28,7 @@ export default function BookDeposSqlite() {
 
   const fetchData = async () => {
     try {
-      const data: unknown[] | undefined = await sqlite.getData("books");
+      const data: unknown[] | undefined = await sqlite.getData();
       log.debug(
         "(fetchData)(BookDeposSqlite) Полученные данные: ",
         JSON.stringify(data)
@@ -69,26 +69,10 @@ export default function BookDeposSqlite() {
               <Text>Дата добавление книги: {item.date}</Text>
               <Text>Прочтена? {item.status ? "Да" : "Нет"}</Text>
               <View>
-                {/* <BookDeposButton
-                text="Удалить книгу"
-                func={async () => {
-                  await deleteBook(item.id);
-                  fetchData();
-                }}
-              /> */}
-                {/* <BookDeposButton
-                text="Посмотреть книгу подробнее"
-                func={() =>
-                  router.push({
-                    pathname: "/BookDepository/[id]",
-                    params: { id: item.id },
-                  })
-                }
-              /> */}
                 <BookDeposButton
                   text="Удалить книгу"
                   func={async () => {
-                    await sqlite.DeleteRecord("books", item.id);
+                    await sqlite.DeleteRecord(item.id, "books");
                     await fetchData();
                   }}
                 />
@@ -100,6 +84,9 @@ export default function BookDeposSqlite() {
                       params: { id: item.id },
                     })
                   }
+                />
+                <BookDeposButton
+                text="Посмотреть книгу "
                 />
               </View>
             </View>
