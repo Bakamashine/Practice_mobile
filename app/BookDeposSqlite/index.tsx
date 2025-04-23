@@ -86,6 +86,13 @@ export default function BookDeposSqlite() {
                 }
               /> */}
                 <BookDeposButton
+                  text="Удалить книгу"
+                  func={async () => {
+                    await sqlite.DeleteRecord("books", item.id);
+                    await fetchData();
+                  }}
+                />
+                <BookDeposButton
                   text="Изменить дату прочтения"
                   func={() =>
                     router.push({

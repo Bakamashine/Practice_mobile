@@ -126,6 +126,26 @@ class MainClass extends ConnectDB {
       log.error(err);
     }
   }
+
+  /**
+   * Низкоуровневое удаление записи по ID
+   * @param table Имя таблицы в которой будет удалена запись
+   * @param id ID по которому будет удалена запись
+   */
+  async DeleteRecord(table: string, id: number) {
+    try {
+      await this.connect();
+      const result = await this._db?.runAsync(
+        `
+          delete from ${table} where id = ?
+        `,
+        id
+      );
+      log.debug(result);
+    } catch (err) {
+      log.error(err);
+    }
+  }
 }
 
 export default MainClass;
