@@ -64,14 +64,20 @@ export default function DetailBook() {
     useCallback(() => {
       fetchData();
     //   goToPage(parseInt(id));
-    }, [id])
+    }, [])
   );
 
-    useFocusEffect(
-      useCallback(() => {
-        goToPage(parseInt(id));
-      }, [array])
-    );
+    // useFocusEffect(
+    //   useCallback(() => {
+    //     goToPage(parseInt(id));
+    //   }, [array])
+    // );
+
+    useEffect(() => {
+        if (!loading) {
+            goToPage(parseInt(id))
+        }
+    }, [id, loading, array])
 
   if (loading) {
     return (
@@ -93,7 +99,7 @@ export default function DetailBook() {
         <PagerView
           style={styles_id.container}
           ref={pagerRef}
-          key={array.length}
+          // key={array.length}
         >
           {array.map((item) => (
             <View key={item.id} style={styles_id.page}>
