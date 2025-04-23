@@ -14,12 +14,18 @@ import { log } from "@/configs/logger";
 import PagerView from "react-native-pager-view";
 import BookDeposSqliteBackButton from "@/components/BookDepository/BookDeposSqliteBackButton";
 import BookDeposButton from "@/components/ui/BookDeposButton";
+import { onShare } from "@/datebase/Share";
 
 export default function DetailBook() {
   let { id } = useLocalSearchParams<{ id: string }>();
 
   const books = new Books();
   const pagerRef = useRef<PagerView>(null);
+
+  /**
+   * Страница на какой в данный момент пользователь
+   */
+  const [currentPage, setCurrentPage] = React.useState(0);
 
   const [loading, setLoading] = React.useState(true);
 
@@ -63,21 +69,16 @@ export default function DetailBook() {
   useFocusEffect(
     useCallback(() => {
       fetchData();
-    //   goToPage(parseInt(id));
-    }, [])
+    }, [id])
   );
 
-    // useFocusEffect(
-    //   useCallback(() => {
-    //     goToPage(parseInt(id));
-    //   }, [array])
-    // );
-
-    useEffect(() => {
-        if (!loading) {
-            goToPage(parseInt(id))
-        }
-    }, [id, loading, array])
+  useFocusEffect(
+    useCallback(() => {
+      if (!loading && array.length > 0) {
+        goToPage(parseInt(id));
+      }
+    }, [loading, array])
+  );
 
   if (loading) {
     return (
@@ -99,6 +100,7 @@ export default function DetailBook() {
         <PagerView
           style={styles_id.container}
           ref={pagerRef}
+          onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}
           // key={array.length}
         >
           {array.map((item) => (
@@ -111,9 +113,10 @@ export default function DetailBook() {
                 Прочтена? {item?.status ? "Да" : "Нет"}
               </Text>
               <BookDeposSqliteBackButton />
-                <BookDeposButton
-                text='Отправить отчёт о прочтении'
-                />
+              <BookDeposButton
+                text="Отправить отчёт о прочтении"
+                func={() => onShare(item.name)}
+              />
             </View>
           ))}
         </PagerView>
