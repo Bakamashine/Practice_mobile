@@ -1,5 +1,13 @@
 import React from "react";
-import { View, TextInput, StyleSheet, Text, Button } from "react-native";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  Modal
+} from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import styles from "@/components/BookDepository/styles";
 import BookDeposButton from "@/components/ui/BookDeposButton";
@@ -34,6 +42,8 @@ function add() {
 
   const [facing, setFacing] = React.useState<Camera.CameraType>("back");
   const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [image, setImage] = React.useState<string | undefined>(undefined);
+  const [statusModal, setStatusModal] = React.useState(false);
 
   /**
    * Меняет дату
@@ -76,6 +86,11 @@ function add() {
     setFacing((current) => (current === "back" ? "front" : "back"));
   }
 
+  // function checkImage() {
+  //   // return image === undefined ? "@/database/default_image.jpg" : image as string;
+  //   return image ? { uri: image } : require("@/database/default_image.jpg")
+  // }
+
   return (
     <View>
       <View>
@@ -85,12 +100,9 @@ function add() {
           onChangeText={(value) => setName(value)}
         />
         <View style={styles.center}>
-          <BookDeposButton
-            text="Добавить фото"
-            // props_styles={{ marginBottom: 20 }}
-          />
+          <BookDeposButton text="Добавить фото" />
           <BookDeposButton text="Выбрать дату" func={showMode} />
-          
+
           {/* FIXME: BouncyBox не ставится по центру */}
           <View style={{ marginTop: 10, alignItems: "center" }}>
             <BouncyCheckbox
@@ -119,8 +131,68 @@ function add() {
       <Text style={[styles.textCenter, { marginTop: 20 }]}>
         Выбранная дата: {date_to_day(date)}{" "}
       </Text>
+
+      <View style={{ marginTop: 20 }}>
+        <Text style={styles.textCenter}>Фото книги: </Text>
+        <TouchableOpacity onPress={() => setStatusModal(true)}>
+          <Image
+            source={
+              image ? { uri: image } : require("@/datebase/default_image.jpg")
+            }
+            style={StyleSheet.flatten([
+              add_style.ImageStyle,
+              styles.marginCenter,
+            ])}
+          />
+        </TouchableOpacity>
+      </View>
+      <View>
+        <Modal visible={statusModal} animationType="slide">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              
+          <Image
+            source={
+              image ? { uri: image } : require("@/datebase/default_image.jpg")
+            }
+            style={StyleSheet.flatten([
+              add_style.ImageStyle2,
+              styles.marginCenter,
+            ])}
+                // resizeMode="contain"
+                resizeMode="stretch"
+          />
+
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  setStatusModal(false);
+                }}
+              >
+                <Text>Назад</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </View>
     </View>
   );
 }
+
+const add_style = StyleSheet.create({
+  ImageStyle: {
+    borderWidth: 1,
+    borderColor: "black",
+    width: 100,
+    height: 100,
+    marginTop: 5,
+  },
+  ImageStyle2: {
+    width: 200,
+    height: 500,
+    marginTop: 5,
+  },
+
+});
 
 export default add;
