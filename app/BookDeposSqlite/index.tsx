@@ -88,10 +88,6 @@ export default function BookDeposSqlite() {
                 <BookDeposButton
                   text="Посмотреть книгу "
                   func={() => {
-                    // router.push({
-                    //   pathname: "/BookDeposSqlite/[id]",
-                    //   params: { id: item.id },
-                    // });
                     router.push(`/BookDeposSqlite/${item.id}`)
                   }}
                 />
@@ -115,14 +111,14 @@ export default function BookDeposSqlite() {
                 text="Добавить новую книгу"
                 func={() => router.replace("/BookDeposSqlite/add")}
               />
-              <BookDeposButton
+              {/* <BookDeposButton
                 text="Сделать миграции"
                 func={async () => await sqlite.migrate()}
               />
               <BookDeposButton
                 text="Удалить таблицу с книгами"
                 func={async () => await sqlite.DropTable("books")}
-              />
+              /> */}
               <BookDeposButton
                 text="Добавить книги"
                 func={async () => {

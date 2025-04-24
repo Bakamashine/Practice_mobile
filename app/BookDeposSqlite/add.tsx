@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TextInput, StyleSheet, Text } from "react-native";
+import { View, TextInput, StyleSheet, Text, Button } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import styles from "@/components/BookDepository/styles";
 import BookDeposButton from "@/components/ui/BookDeposButton";
@@ -14,6 +14,8 @@ import {
 } from "@react-native-community/datetimepicker";
 import BookDeposSqliteBackButton from "@/components/BookDepository/BookDeposSqliteBackButton";
 import Books from "@/datebase/Books";
+import * as Camera from "expo-camera";
+import * as Safe from "react-native-safe-area-context";
 
 function add() {
   const book = new Books();
@@ -29,6 +31,9 @@ function add() {
    * @default ''
    */
   const [name, setName] = React.useState("");
+
+  const [facing, setFacing] = React.useState<Camera.CameraType>("back");
+  const [permission, requestPermission] = Camera.useCameraPermissions();
 
   /**
    * Меняет дату
@@ -53,29 +58,51 @@ function add() {
     });
   };
 
+  // if (!permission) {
+  //   return <View />;
+  // }
+
+  // if (!permission.granted) {
+  //   // Camera permissions are not granted yet.
+  //   return (
+  //     <View>
+  //       <Text>Вы должны дать разрешение на камеру</Text>
+  //       <Button onPress={requestPermission} title="Повышение полномочий" />
+  //     </View>
+  //   );
+  // }
+
+  function toggleCameraFacing() {
+    setFacing((current) => (current === "back" ? "front" : "back"));
+  }
+
   return (
     <View>
-      <TextInput
-        style={styles.TextInput}
-        placeholder="Введите название книги."
-        onChangeText={(value) => setName(value)}
-      ></TextInput>
-      <Text style={styles.textCenter}>
-        Выбранная дата: {date_to_day(date)}{" "}
-      </Text>
+      <View>
+        <TextInput
+          style={styles.TextInput}
+          placeholder="Введите название книги."
+          onChangeText={(value) => setName(value)}
+        />
+        <View style={styles.center}>
+          <BookDeposButton
+            text="Добавить фото"
+            // props_styles={{ marginBottom: 20 }}
+          />
+          <BookDeposButton text="Выбрать дату" func={showMode} />
+          
+          {/* FIXME: BouncyBox не ставится по центру */}
+          <View style={{ marginTop: 10, alignItems: "center" }}>
+            <BouncyCheckbox
+              textStyle={{ textDecorationLine: "none" }}
+              onPress={(isChecked: boolean) => setCheck(isChecked)}
+              size={25}
+              text="Прочтена?"
+            />
+          </View>
+        </View>
+      </View>
       <View style={[styles.center]}>
-        {/* <BookDeposButton
-          text={`Добавить новую книгу`}
-          func={async () => {
-            await storeData({
-              name: name,
-              id: 0,
-              date: date_to_day(date),
-              status: check,
-            });
-            back();
-          }}
-        /> */}
         <BookDeposButton
           text="Добавить новую книгу"
           func={async () => {
@@ -87,15 +114,11 @@ function add() {
             router.replace("/BookDeposSqlite");
           }}
         />
-        <BouncyCheckbox
-          textStyle={{ textDecorationLine: "none" }}
-          onPress={(isChecked: boolean) => setCheck(isChecked)}
-          size={25}
-          text="Прочтена?"
-        />
-        <BookDeposButton text="Выбрать дату" func={showMode} />
         <BookDeposSqliteBackButton />
       </View>
+      <Text style={[styles.textCenter, { marginTop: 20 }]}>
+        Выбранная дата: {date_to_day(date)}{" "}
+      </Text>
     </View>
   );
 }

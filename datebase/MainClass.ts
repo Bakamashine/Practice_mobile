@@ -30,7 +30,7 @@ class MainClass extends ConnectDB {
             name TEXT NOT NULL,
             status BOOLEAN NOT NULL,
             date TEXT NOT NULL,
-            image TEXT,
+            image TEXT
 );
             `
       );
