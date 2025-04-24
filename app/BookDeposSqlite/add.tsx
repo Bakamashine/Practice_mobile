@@ -6,15 +6,13 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  Modal
+  Modal,
+  Button,
 } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import styles from "@/components/BookDepository/styles";
 import BookDeposButton from "@/components/ui/BookDeposButton";
-import {
-  date_to_day,
-  storeData,
-} from "@/components/BookDepository/BookDepository.service";
+import { date_to_day } from "@/components/BookDepository/BookDepository.service";
 import { router } from "expo-router";
 import {
   DateTimePickerAndroid,
@@ -27,7 +25,13 @@ import * as Safe from "react-native-safe-area-context";
 
 function add() {
   const book = new Books();
+
+  /**
+   * Хранение выбранной даты
+   * @default new Date()
+   */
   const [date, setDate] = React.useState(new Date());
+
   /**
    * Статус нажатия на checkbox
    * @default false
@@ -40,9 +44,33 @@ function add() {
    */
   const [name, setName] = React.useState("");
 
+  /**
+   * Активная камера
+   * Можно использовать заднюю и переднюю
+   * @default "back"
+   */
   const [facing, setFacing] = React.useState<Camera.CameraType>("back");
-  const [permission, requestPermission] = Camera.useCameraPermissions();
+
+  /**
+   * Полномочия
+   */
+  // const [permission, requestPermission] = Camera.useCameraPermissions();
+
+  /**
+   * Видимость камеры
+   */
+  // const [isCameraVisible, setIsCameraVisible] = React.useState(false);
+
+  /**
+   * После фотографирования или добавления с галереи, сохраняется в image
+   * @default undefined
+   */
   const [image, setImage] = React.useState<string | undefined>(undefined);
+
+  /**
+   * Статус модального окна (открывается при клике на изображение)
+   * @default false
+   */
   const [statusModal, setStatusModal] = React.useState(false);
 
   /**
@@ -68,113 +96,119 @@ function add() {
     });
   };
 
-  // if (!permission) {
-  //   return <View />;
-  // }
 
-  // if (!permission.granted) {
-  //   // Camera permissions are not granted yet.
-  //   return (
-  //     <View>
-  //       <Text>Вы должны дать разрешение на камеру</Text>
-  //       <Button onPress={requestPermission} title="Повышение полномочий" />
-  //     </View>
-  //   );
-  // }
-
+  /**
+   * Переключение камеры (можно использовать заднюю и переднюю)
+   */
   function toggleCameraFacing() {
     setFacing((current) => (current === "back" ? "front" : "back"));
   }
 
-  // function checkImage() {
-  //   // return image === undefined ? "@/database/default_image.jpg" : image as string;
-  //   return image ? { uri: image } : require("@/database/default_image.jpg")
-  // }
-
   return (
     <View>
       <View>
-        <TextInput
-          style={styles.TextInput}
-          placeholder="Введите название книги."
-          onChangeText={(value) => setName(value)}
-        />
-        <View style={styles.center}>
-          <BookDeposButton text="Добавить фото" />
-          <BookDeposButton text="Выбрать дату" func={showMode} />
-
-          {/* FIXME: BouncyBox не ставится по центру */}
-          <View style={{ marginTop: 10, alignItems: "center" }}>
-            <BouncyCheckbox
-              textStyle={{ textDecorationLine: "none" }}
-              onPress={(isChecked: boolean) => setCheck(isChecked)}
-              size={25}
-              text="Прочтена?"
+        <View>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Введите название книги."
+            onChangeText={(value) => setName(value)}
+          />
+          <View style={styles.center}>
+            <BookDeposButton
+              text="Добавить фото"
+              // func={() => setIsCameraVisible(true)}
+              func={() => router.push("/BookDeposSqlite/camera")} 
             />
-          </View>
-        </View>
-      </View>
-      <View style={[styles.center]}>
-        <BookDeposButton
-          text="Добавить новую книгу"
-          func={async () => {
-            await book.addBook({
-              name,
-              date: date_to_day(date),
-              status: check,
-            });
-            router.replace("/BookDeposSqlite");
-          }}
-        />
-        <BookDeposSqliteBackButton />
-      </View>
-      <Text style={[styles.textCenter, { marginTop: 20 }]}>
-        Выбранная дата: {date_to_day(date)}{" "}
-      </Text>
+            <BookDeposButton text="Выбрать дату" func={showMode} />
 
-      <View style={{ marginTop: 20 }}>
-        <Text style={styles.textCenter}>Фото книги: </Text>
-        <TouchableOpacity onPress={() => setStatusModal(true)}>
-          <Image
-            source={
-              image ? { uri: image } : require("@/datebase/default_image.jpg")
-            }
-            style={StyleSheet.flatten([
-              add_style.ImageStyle,
-              styles.marginCenter,
-            ])}
-          />
-        </TouchableOpacity>
-      </View>
-      <View>
-        <Modal visible={statusModal} animationType="slide">
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              
-          <Image
-            source={
-              image ? { uri: image } : require("@/datebase/default_image.jpg")
-            }
-            style={StyleSheet.flatten([
-              add_style.ImageStyle2,
-              styles.marginCenter,
-            ])}
-                // resizeMode="contain"
-                resizeMode="stretch"
-          />
-
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => {
-                  setStatusModal(false);
-                }}
-              >
-                <Text>Назад</Text>
-              </TouchableOpacity>
+            {/* FIXME: BouncyBox не ставится по центру */}
+            <View style={{ marginTop: 10, alignItems: "center" }}>
+              <BouncyCheckbox
+                textStyle={{ textDecorationLine: "none" }}
+                onPress={(isChecked: boolean) => setCheck(isChecked)}
+                size={25}
+                text="Прочтена?"
+              />
             </View>
           </View>
-        </Modal>
+        </View>
+        <View style={[styles.center]}>
+          <BookDeposButton
+            text="Добавить новую книгу"
+            func={async () => {
+              await book.addBook({
+                name,
+                date: date_to_day(date),
+                status: check,
+              });
+              router.replace("/BookDeposSqlite");
+            }}
+          />
+          <BookDeposSqliteBackButton />
+        </View>
+        <Text style={[styles.textCenter, { marginTop: 20 }]}>
+          Выбранная дата: {date_to_day(date)}{" "}
+        </Text>
+
+        <View style={{ marginTop: 20 }}>
+          <Text style={styles.textCenter}>Фото книги: </Text>
+          <TouchableOpacity onPress={() => setStatusModal(true)}>
+            <Image
+              source={
+                image ? { uri: image } : require("@/datebase/default_image.jpg")
+              }
+              style={StyleSheet.flatten([
+                add_style.ImageStyle,
+                styles.marginCenter,
+              ])}
+            />
+          </TouchableOpacity>
+        </View>
+        <View>
+          <Modal visible={statusModal} animationType="slide">
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Image
+                  source={
+                    image
+                      ? { uri: image }
+                      : require("@/datebase/default_image.jpg")
+                  }
+                  style={StyleSheet.flatten([
+                    add_style.ImageStyle2,
+                    styles.marginCenter,
+                  ])}
+                  // resizeMode="contain"
+                  resizeMode="stretch"
+                />
+
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => {
+                    setStatusModal(false);
+                  }}
+                >
+                  <Text>Назад</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        </View>
       </View>
+      {/* {isCameraVisible && (
+        <View style={styles.container}>
+          <Camera.CameraView style={{ flex: 1 }} facing={facing}>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={toggleCameraFacing}
+              >
+                <Text>Повернуть камеру</Text>
+              </TouchableOpacity>
+            </View>
+          </Camera.CameraView>
+        </View>
+      )} */}
     </View>
   );
 }
@@ -192,7 +226,6 @@ const add_style = StyleSheet.create({
     height: 500,
     marginTop: 5,
   },
-
 });
 
 export default add;

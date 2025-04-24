@@ -71,6 +71,13 @@ function Layout() {
             headerTitle: "Добавление книги (sqlite)",
           }}
         />
+        
+        <Drawer.Screen
+        name="BookDeposSqlite/camera"
+        options={{
+            headerShown: false
+        }}
+        />
       </Drawer>
     </GestureHandlerRootView>
   );
