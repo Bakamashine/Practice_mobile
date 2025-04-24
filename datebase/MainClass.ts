@@ -28,8 +28,9 @@ class MainClass extends ConnectDB {
             CREATE TABLE IF NOT EXISTS books (
             id INTEGER PRIMARY KEY NOT NULL,
             name TEXT NOT NULL,
-            status BOOLEAN,
-            date TEXT
+            status BOOLEAN NOT NULL,
+            date TEXT NOT NULL,
+            image TEXT,
 );
             `
       );
