@@ -29,13 +29,6 @@ export default function BookDeposSqlite() {
   const [array, setArray] = React.useState<books[]>([]);
   const [refreshing, setRefreshing] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
-  // const [imageSource, setImageSource] = React.useState<ImageSourcePropType>(
-  //   require("@/datebase/default_image.jpg")
-  // );
-
-  // const [imageSource, setImageSource] = React.useState<ImageSourcePropType>(
-  //   require("@/datebase/default_image.jpg")
-  // );
 
   const fetchData = async () => {
     try {
@@ -75,97 +68,92 @@ export default function BookDeposSqlite() {
   }
   return (
     <View>
-      <View>
-        <FlatList
-          data={array}
-          renderItem={({ item }) => (
-              <View key={item.id} style={BookDepository_styles.section}>
-                <Image
-                  source={
-                   item.image
-                      ? { uri: item.image }
-                      : require("@/datebase/default_image.jpg")
-                  }
+      <FlatList
+        data={array}
+        renderItem={({ item }) => (
+          <View key={item.id} style={BookDepository_styles.section}>
+            <Image
+              source={
+                item.image
+                  ? { uri: item.image }
+                  : require("@/datebase/default_image.jpg")
+              }
+              // source={
+              //   (async () => {
+              //     try {
+              //       if (item.image === undefined) {
+              //         return require("@/datebase/default_image.jpg");
+              //       }
+              //       const result = await FileSystem.getInfoAsync(item.image);
+              //       return result.exists
+              //         ? { uri: item.image }
+              //         : require("@/datebase/default_image.jpg");
+              //     } catch (error) {
+              //       log.error("Ошибка при проверке изображения:", error);
+              //       return require("@/datebase/default_image.jpg");
+              //     }
+              //   })() as ImageSourcePropType
+              // }
 
-                  // source={
-                  //   (async () => {
-                  //     try {
-                  //       if (item.image === undefined) {
-                  //         return require("@/datebase/default_image.jpg");
-                  //       }
-                  //       const result = await FileSystem.getInfoAsync(item.image);
-                  //       return result.exists
-                  //         ? { uri: item.image }
-                  //         : require("@/datebase/default_image.jpg");
-                  //     } catch (error) {
-                  //       log.error("Ошибка при проверке изображения:", error);
-                  //       return require("@/datebase/default_image.jpg");
-                  //     }
-                  //   })() as ImageSourcePropType
-                  // }
-
-                  style={[
-                    {
-                      width: 100,
-                      height: 100,
-                      borderRadius: 10,
-                    },
-                    styles.marginCenter,
-                  ]}
-                />
-                <Text>Id книги: {item.id}</Text>
-                <Text>Название книги: {item.name}</Text>
-                <Text>Дата добавление книги: {item.date}</Text>
-                <Text>Прочтена? {item.status ? "Да" : "Нет"}</Text>
-                <View>
-                  {typeof item.id === "number" && (
-                    <BookDeposButton
-                      text="Удалить книгу"
-                      func={async () => {
-                        await sqlite.DeleteRecord(item.id as number, "books");
-                        await fetchData();
-                      }}
-                    />
-                  )}
-                  <BookDeposButton
-                    text="Изменить дату прочтения"
-                    func={() =>
-                      router.push({
-                        pathname: "/BookDeposSqlite/redact",
-                        params: { id: item.id },
-                      })
-                    }
-                  />
-                  <BookDeposButton
-                    text="Посмотреть книгу "
-                    func={() => {
-                      router.push(`/BookDeposSqlite/${item.id}`);
-                    }}
-                  />
-                </View>
-              </View>
-            )
-          }
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={fetchData} />
-          }
-          ListHeaderComponent={
+              style={[
+                {
+                  width: 100,
+                  height: 100,
+                  borderRadius: 10,
+                },
+                styles.marginCenter,
+              ]}
+            />
+            <Text>Id книги: {item.id}</Text>
+            <Text>Название книги: {item.name}</Text>
+            <Text>Дата добавление книги: {item.date}</Text>
+            <Text>Прочтена? {item.status ? "Да" : "Нет"}</Text>
             <View>
-              <Text style={styles.h1}>Ваши книги: </Text>
-              <Text style={{ textAlign: "center" }}>
-                (для перезагрузки страницы, свайпните вверх)
-              </Text>
-            </View>
-          }
-          ListFooterComponent={
-            <View style={styles.center}>
               <BookDeposButton
-                text="Добавить новую книгу"
-                func={() =>{
-                  router.push("/BookDeposSqlite/add")
-                  }}
+                text="Удалить книгу"
+                func={async () => {
+                  await sqlite.DeleteRecord(item.id as number, "books");
+                  await fetchData();
+                }}
               />
-              {/* <BookDeposButton
+              <BookDeposButton
+                text="Изменить дату прочтения"
+                func={() =>
+                  router.push({
+                    pathname: "/BookDeposSqlite/redact",
+                    params: { id: item.id },
+                  })
+                }
+              />
+              <BookDeposButton
+                text="Посмотреть книгу "
+                func={() => {
+                  router.push(`/BookDeposSqlite/${item.id}`);
+                }}
+              />
+            </View>
+          </View>
+        )}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={fetchData} />
+        }
+        ListHeaderComponent={
+          <View>
+            <Text style={styles.h1}>Ваши книги: </Text>
+            <Text style={{ textAlign: "center" }}>
+              (для перезагрузки страницы, свайпните вверх)
+            </Text>
+          </View>
+        }
+        ListFooterComponent={
+          <View style={[styles.center, { paddingBottom: 40 }]}>
+            <BookDeposButton
+              text="Добавить новую книгу"
+              func={() => {
+                router.push("/BookDeposSqlite/add");
+              }}
+            />
+            {/* <BookDeposButton
                 text="Сделать миграции"
                 func={async () => await sqlite.migrate()}
               />
@@ -173,25 +161,24 @@ export default function BookDeposSqlite() {
                 text="Удалить таблицу с книгами"
                 func={async () => await sqlite.DropTable("books")}
               /> */}
-              <BookDeposButton
-                text="Добавить книги"
-                func={async () => {
-                  await sqlite.generateBooks();
-                  await fetchData();
-                }}
-              />
+            <BookDeposButton
+              text="Добавить книги"
+              func={async () => {
+                await sqlite.generateBooks();
+                await fetchData();
+              }}
+            />
 
-              <BookDeposButton
-                text="Удалить все книги"
-                func={async () => {
-                  await sqlite.DeleteTable("books");
-                  await fetchData();
-                }}
-              />
-            </View>
-          }
-        />
-      </View>
+            <BookDeposButton
+              text="Удалить все книги"
+              func={async () => {
+                await sqlite.DeleteTable("books");
+                await fetchData();
+              }}
+            />
+          </View>
+        }
+      />
     </View>
   );
 }
