@@ -9,6 +9,7 @@ export interface books {
   name: string;
   status: boolean;
   date: string;
+  image?: string;
 }
 class Books extends MainClass {
   //   elements?: books;
@@ -65,11 +66,15 @@ class Books extends MainClass {
   async addBook(elements: books) {
     try {
       await this.connect();
+      // const result = await this._db?.runAsync(`
+      //       insert into ${this.#table} (name, date, status) values ('${
+      //   elements.name
+      // }', '${elements.date}', ${elements.status})
+      //       `);
+      
       const result = await this._db?.runAsync(`
-            insert into ${this.#table} (name, date, status) values ('${
-        elements.name
-      }', '${elements.date}', ${elements.status})
-            `);
+        insert into ${this.#table} (name, date, status, image) values (?,?,?,?)
+        `, [elements.name, elements.date, elements.status, elements.image !== undefined && elements.image])
       log.debug(result)
     } catch (err) {
       log.error(err);

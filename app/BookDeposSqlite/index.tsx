@@ -3,7 +3,7 @@
  * Хранение книг происходит в sqlite
  * Для этого используется библиотека expo-sqlite
  */
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, router } from "expo-router";
 import {
   View,
@@ -11,13 +11,17 @@ import {
   FlatList,
   RefreshControl,
   ActivityIndicator,
+  Image,
+  ImageSourcePropType,
 } from "react-native";
 import BookDeposButton from "@/components/ui/BookDeposButton";
 import Books from "@/datebase/Books";
 import { log } from "@/configs/logger";
 import { useFocusEffect } from "expo-router";
-import { books, BookDepository_styles } from "../BookDepository";
+import { BookDepository_styles } from "../BookDepository";
 import styles from "@/components/BookDepository/styles";
+import { books } from "@/datebase/Books";
+import * as FileSystem from "expo-file-system";
 
 export default function BookDeposSqlite() {
   const sqlite = new Books();
@@ -25,6 +29,13 @@ export default function BookDeposSqlite() {
   const [array, setArray] = React.useState<books[]>([]);
   const [refreshing, setRefreshing] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+  // const [imageSource, setImageSource] = React.useState<ImageSourcePropType>(
+  //   require("@/datebase/default_image.jpg")
+  // );
+
+  const [imageSource, setImageSource] = React.useState<ImageSourcePropType>(
+    require("@/datebase/default_image.jpg")
+  );
 
   const fetchData = async () => {
     try {
@@ -50,6 +61,11 @@ export default function BookDeposSqlite() {
     }, [])
   );
 
+  async function checkImage(image: string) {
+    const result = await FileSystem.getInfoAsync(image);
+    return result.exists;
+  }
+
   if (loading) {
     return (
       <View style={styles.container}>
@@ -62,38 +78,75 @@ export default function BookDeposSqlite() {
       <View>
         <FlatList
           data={array}
-          renderItem={({ item }) => (
-            <View key={item.id} style={BookDepository_styles.section}>
-              <Text>Id книги: {item.id}</Text>
-              <Text>Название книги: {item.name}</Text>
-              <Text>Дата добавление книги: {item.date}</Text>
-              <Text>Прочтена? {item.status ? "Да" : "Нет"}</Text>
-              <View>
-                <BookDeposButton
-                  text="Удалить книгу"
-                  func={async () => {
-                    await sqlite.DeleteRecord(item.id, "books");
-                    await fetchData();
-                  }}
-                />
-                <BookDeposButton
-                  text="Изменить дату прочтения"
-                  func={() =>
-                    router.push({
-                      pathname: "/BookDeposSqlite/redact",
-                      params: { id: item.id },
-                    })
+          renderItem={({ item }) => {
+            return (
+              <View key={item.id} style={BookDepository_styles.section}>
+                <Image
+                  source={
+                   item.image
+                      ? { uri: item.image }
+                      : require("@/datebase/default_image.jpg")
                   }
+
+                  // source={
+                  //   (async () => {
+                  //     try {
+                  //       if (item.image === undefined) {
+                  //         return require("@/datebase/default_image.jpg");
+                  //       }
+                  //       const result = await FileSystem.getInfoAsync(item.image);
+                  //       return result.exists
+                  //         ? { uri: item.image }
+                  //         : require("@/datebase/default_image.jpg");
+                  //     } catch (error) {
+                  //       log.error("Ошибка при проверке изображения:", error);
+                  //       return require("@/datebase/default_image.jpg");
+                  //     }
+                  //   })() as ImageSourcePropType
+                  // }
+
+                  style={[
+                    {
+                      width: 100,
+                      height: 100,
+                      borderRadius: 10,
+                    },
+                    styles.marginCenter,
+                  ]}
                 />
-                <BookDeposButton
-                  text="Посмотреть книгу "
-                  func={() => {
-                    router.push(`/BookDeposSqlite/${item.id}`)
-                  }}
-                />
+                <Text>Id книги: {item.id}</Text>
+                <Text>Название книги: {item.name}</Text>
+                <Text>Дата добавление книги: {item.date}</Text>
+                <Text>Прочтена? {item.status ? "Да" : "Нет"}</Text>
+                <View>
+                  {typeof item.id === "number" && (
+                    <BookDeposButton
+                      text="Удалить книгу"
+                      func={async () => {
+                        await sqlite.DeleteRecord(item.id as number, "books");
+                        await fetchData();
+                      }}
+                    />
+                  )}
+                  <BookDeposButton
+                    text="Изменить дату прочтения"
+                    func={() =>
+                      router.push({
+                        pathname: "/BookDeposSqlite/redact",
+                        params: { id: item.id },
+                      })
+                    }
+                  />
+                  <BookDeposButton
+                    text="Посмотреть книгу "
+                    func={() => {
+                      router.push(`/BookDeposSqlite/${item.id}`);
+                    }}
+                  />
+                </View>
               </View>
-            </View>
-          )}
+            );
+          }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={fetchData} />
           }

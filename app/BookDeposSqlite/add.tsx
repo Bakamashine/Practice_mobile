@@ -52,16 +52,6 @@ function add() {
   const [facing, setFacing] = React.useState<Camera.CameraType>("back");
 
   /**
-   * Полномочия
-   */
-  // const [permission, requestPermission] = Camera.useCameraPermissions();
-
-  /**
-   * Видимость камеры
-   */
-  // const [isCameraVisible, setIsCameraVisible] = React.useState(false);
-
-  /**
    * После фотографирования или добавления с галереи, сохраняется в image
    * @default undefined
    */
@@ -96,14 +86,6 @@ function add() {
     });
   };
 
-
-  /**
-   * Переключение камеры (можно использовать заднюю и переднюю)
-   */
-  function toggleCameraFacing() {
-    setFacing((current) => (current === "back" ? "front" : "back"));
-  }
-  
   useEffect(() => {
     if (new_img !== undefined && new_img !== null) {
       setImage(new_img)
@@ -122,7 +104,6 @@ function add() {
           <View style={styles.center}>
             <BookDeposButton
               text="Добавить фото"
-              // func={() => setIsCameraVisible(true)}
               func={() => router.push("/BookDeposSqlite/camera")} 
             />
             <BookDeposButton text="Выбрать дату" func={showMode} />
@@ -146,6 +127,7 @@ function add() {
                 name,
                 date: date_to_day(date),
                 status: check,
+                image: image
               });
               router.replace("/BookDeposSqlite");
             }}
@@ -184,7 +166,6 @@ function add() {
                     add_style.ImageStyle2,
                     styles.marginCenter,
                   ])}
-                  // resizeMode="contain"
                   resizeMode="stretch"
                 />
 
@@ -201,20 +182,6 @@ function add() {
           </Modal>
         </View>
       </View>
-      {/* {isCameraVisible && (
-        <View style={styles.container}>
-          <Camera.CameraView style={{ flex: 1 }} facing={facing}>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={toggleCameraFacing}
-              >
-                <Text>Повернуть камеру</Text>
-              </TouchableOpacity>
-            </View>
-          </Camera.CameraView>
-        </View>
-      )} */}
     </View>
   );
 }
