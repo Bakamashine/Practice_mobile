@@ -23,7 +23,7 @@ import { log } from "@/configs/logger";
 
 function add() {
   const book = new Books();
-  const {new_img, new_book} = useLocalSearchParams<{new_img?: string, new_book?: string}>()
+  const {new_img }= useLocalSearchParams<{new_img?: string, new_book?: string}>()
   /**
    * Хранение выбранной даты
    * @default new Date()
@@ -86,16 +86,7 @@ function add() {
     setCheck(false);
   }
 
-  useEffect(() => {
-    function checkBoolean(bol: string) {
-      return bol === "true" ? true : false
-    }
-    if (new_book !== undefined) {
-      if (checkBoolean(new_book)) {
-        reset()
-      }
-    }
-  }, [new_book])
+
   useEffect(() => {
     if (new_img !== undefined && new_img !== null) {
       setImage(new_img)

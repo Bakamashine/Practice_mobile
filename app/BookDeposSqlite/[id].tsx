@@ -75,9 +75,6 @@ export default function DetailBook() {
 
   useEffect(() => {
     fetchData();
-    // (async () => {
-    //   await fetchData();
-    // })();
   }, [id]);
 
   if (loading) {

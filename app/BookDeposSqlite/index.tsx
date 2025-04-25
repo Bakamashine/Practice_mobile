@@ -78,8 +78,7 @@ export default function BookDeposSqlite() {
       <View>
         <FlatList
           data={array}
-          renderItem={({ item }) => {
-            return (
+          renderItem={({ item }) => (
               <View key={item.id} style={BookDepository_styles.section}>
                 <Image
                   source={
@@ -145,8 +144,8 @@ export default function BookDeposSqlite() {
                   />
                 </View>
               </View>
-            );
-          }}
+            )
+          }
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={fetchData} />
           }
@@ -163,11 +162,7 @@ export default function BookDeposSqlite() {
               <BookDeposButton
                 text="Добавить новую книгу"
                 func={() =>{
-                  router.push({
-                    pathname: "/BookDeposSqlite/add",
-                    params: {new_book: true.toString()}
-                  })
-
+                  router.push("/BookDeposSqlite/add")
                   }}
               />
               {/* <BookDeposButton
