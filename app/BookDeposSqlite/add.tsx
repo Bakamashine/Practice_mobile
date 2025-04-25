@@ -121,7 +121,10 @@ function add() {
                 name,
                 date: date_to_day(date),
                 status: check,
-                image: image,
+                image:
+                  image === undefined || image === null || image === "0"
+                    ? null
+                    : image,
               });
               router.replace("/BookDeposSqlite");
             }}

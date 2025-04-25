@@ -9,7 +9,7 @@ export interface books {
   name: string;
   status: boolean;
   date: string;
-  image?: string;
+  image?: string|null;
 }
 class Books extends MainClass {
   //   elements?: books;
