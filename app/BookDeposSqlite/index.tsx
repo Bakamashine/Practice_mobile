@@ -61,10 +61,10 @@ export default function BookDeposSqlite() {
     }, [])
   );
 
-  async function checkImage(image: string) {
-    const result = await FileSystem.getInfoAsync(image);
-    return result.exists;
-  }
+  // async function checkImage(image: string) {
+  //   const result = await FileSystem.getInfoAsync(image);
+  //   return result.exists;
+  // }
 
   if (loading) {
     return (
@@ -162,7 +162,13 @@ export default function BookDeposSqlite() {
             <View style={styles.center}>
               <BookDeposButton
                 text="Добавить новую книгу"
-                func={() => router.replace("/BookDeposSqlite/add")}
+                func={() =>{
+                  router.push({
+                    pathname: "/BookDeposSqlite/add",
+                    params: {new_book: true.toString()}
+                  })
+
+                  }}
               />
               {/* <BookDeposButton
                 text="Сделать миграции"

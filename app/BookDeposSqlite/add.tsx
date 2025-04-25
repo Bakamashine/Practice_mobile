@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -7,7 +7,6 @@ import {
   Image,
   TouchableOpacity,
   Modal,
-  Button,
 } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import styles from "@/components/BookDepository/styles";
@@ -20,12 +19,11 @@ import {
 } from "@react-native-community/datetimepicker";
 import BookDeposSqliteBackButton from "@/components/BookDepository/BookDeposSqliteBackButton";
 import Books from "@/datebase/Books";
-import * as Camera from "expo-camera";
-import * as Safe from "react-native-safe-area-context";
+import { log } from "@/configs/logger";
 
 function add() {
   const book = new Books();
-  const {new_img} = useLocalSearchParams<{new_img?: string}>()
+  const {new_img, new_book} = useLocalSearchParams<{new_img?: string, new_book?: string}>()
   /**
    * Хранение выбранной даты
    * @default new Date()
@@ -44,12 +42,6 @@ function add() {
    */
   const [name, setName] = React.useState("");
 
-  /**
-   * Активная камера
-   * Можно использовать заднюю и переднюю
-   * @default "back"
-   */
-  const [facing, setFacing] = React.useState<Camera.CameraType>("back");
 
   /**
    * После фотографирования или добавления с галереи, сохраняется в image
@@ -85,10 +77,29 @@ function add() {
       is24Hour: true,
     });
   };
+  
+  
+  function reset() {
+    setImage(undefined);
+    setName("");
+    setDate(new Date());
+    setCheck(false);
+  }
 
+  useEffect(() => {
+    function checkBoolean(bol: string) {
+      return bol === "true" ? true : false
+    }
+    if (new_book !== undefined) {
+      if (checkBoolean(new_book)) {
+        reset()
+      }
+    }
+  }, [new_book])
   useEffect(() => {
     if (new_img !== undefined && new_img !== null) {
       setImage(new_img)
+      log.debug("(BookDeposSqlite)(add)(useEffect) setImage: ", new_img)
     }
   }, [new_img])
 
@@ -135,7 +146,7 @@ function add() {
           <BookDeposSqliteBackButton />
         </View>
         <Text style={[styles.textCenter, { marginTop: 20 }]}>
-          Выбранная дата: {date_to_day(date)}{" "}
+          Выбранная дата: {date_to_day(date)}
         </Text>
 
         <View style={{ marginTop: 20 }}>

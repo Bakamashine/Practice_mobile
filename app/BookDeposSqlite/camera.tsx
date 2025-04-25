@@ -97,7 +97,7 @@ export default function App() {
    * При переходе на другую страницу, react сам закрывает камеру
    */
   function back() {
-    router.push("/BookDeposSqlite")
+    router.push("/BookDeposSqlite/add")
   }
 
   return (
@@ -118,8 +118,7 @@ export default function App() {
           </TouchableOpacity>
         </View>
       </CameraView>
-
-      {/* Вылетает модальное окно если была сделана фоторафия */}
+      {/* Вылетает модальное окно если была сделана фотография */}
       {image && (
         <Modal visible={modalView} animationType="slide">
           <View style={styles.modalOverlay}>
@@ -134,9 +133,6 @@ export default function App() {
                 style={{
                   width: 200,
                   height: 200,
-                  // borderRadius: 30,
-                  // width: '80%',
-                  // height: '80%',
                   marginTop: 10,
                 }}
                 resizeMode="center"
