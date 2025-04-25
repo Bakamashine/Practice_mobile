@@ -14,6 +14,7 @@ import * as basic_styles from "@/components/BookDepository/styles";
 import * as MediaLibrary from "expo-media-library";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import * as ImagePicker from "expo-image-picker";
 
 /**
  * Выглядит паршиво
@@ -74,13 +75,14 @@ export default function App() {
       log.debug("Изображение было сохранено: ", result);
       router.push({
         pathname: "/BookDeposSqlite/add",
-        params: {new_img: result.uri}
-      })
+        params: { new_img: result.uri },
+      });
     }
   }
 
   /**
    * Загрузка изображения в кеш, затем получение его и передача
+   * После получения изображения, открывается модальное окно
    */
   async function getPicture() {
     if (camera.current) {
@@ -92,13 +94,33 @@ export default function App() {
       }
     }
   }
-  
+
   /**
    * При переходе на другую страницу, react сам закрывает камеру
    */
   function back() {
-    router.push("/BookDeposSqlite/add")
+    router.push("/BookDeposSqlite/add");
   }
+
+  /**
+   * Выбор изображения из галереи
+   * (Взял пример из документации)
+   */
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const photo = result.assets[0].uri;
+      if(photo !== undefined && photo !== null) {
+        setImage(photo);
+        setModalView(true)
+      }
+
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -113,7 +135,7 @@ export default function App() {
           <TouchableOpacity style={styles.button} onPress={back}>
             <Text style={styles.text}>Закрыть камеру и вернуться назад</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={pickImage}>
             <Text style={styles.text}>Выбрать из галереи</Text>
           </TouchableOpacity>
         </View>
