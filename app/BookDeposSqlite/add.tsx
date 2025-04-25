@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   TextInput,
@@ -13,7 +13,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import styles from "@/components/BookDepository/styles";
 import BookDeposButton from "@/components/ui/BookDeposButton";
 import { date_to_day } from "@/components/BookDepository/BookDepository.service";
-import { router } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import {
   DateTimePickerAndroid,
   DateTimePickerEvent,
@@ -25,7 +25,7 @@ import * as Safe from "react-native-safe-area-context";
 
 function add() {
   const book = new Books();
-
+  const {new_img} = useLocalSearchParams<{new_img?: string}>()
   /**
    * Хранение выбранной даты
    * @default new Date()
@@ -103,6 +103,12 @@ function add() {
   function toggleCameraFacing() {
     setFacing((current) => (current === "back" ? "front" : "back"));
   }
+  
+  useEffect(() => {
+    if (new_img !== undefined && new_img !== null) {
+      setImage(new_img)
+    }
+  }, [new_img])
 
   return (
     <View>

@@ -8,12 +8,12 @@ import {
   View,
   Image,
   Modal,
-  StatusBar,
 } from "react-native";
 import { log } from "@/configs/logger";
 import * as basic_styles from "@/components/BookDepository/styles";
 import * as MediaLibrary from "expo-media-library";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
 
 /**
  * Выглядит паршиво
@@ -66,14 +66,18 @@ export default function App() {
   }
 
   /**
-   * Остановка работы камеры
-   */
-  function stopCamera() {}
-
-  /**
    * Сохранение изображения
    */
-  function saveImage() {}
+  async function saveImage() {
+    if (image !== undefined) {
+      const result = await MediaLibrary.createAssetAsync(image);
+      log.debug("Изображение было сохранено: ", result);
+      router.push({
+        pathname: "/BookDeposSqlite/add",
+        params: {new_img: result.uri}
+      })
+    }
+  }
 
   /**
    * Загрузка изображения в кеш, затем получение его и передача
@@ -88,6 +92,13 @@ export default function App() {
       }
     }
   }
+  
+  /**
+   * При переходе на другую страницу, react сам закрывает камеру
+   */
+  function back() {
+    router.push("/BookDeposSqlite")
+  }
 
   return (
     <View style={styles.container}>
@@ -99,7 +110,7 @@ export default function App() {
           <TouchableOpacity style={styles.button} onPress={getPicture}>
             <Text style={styles.text}>Сделать фото</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={back}>
             <Text style={styles.text}>Закрыть камеру и вернуться назад</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button}>
@@ -108,6 +119,7 @@ export default function App() {
         </View>
       </CameraView>
 
+      {/* Вылетает модальное окно если была сделана фоторафия */}
       {image && (
         <Modal visible={modalView} animationType="slide">
           <View style={styles.modalOverlay}>
@@ -125,12 +137,18 @@ export default function App() {
                   // borderRadius: 30,
                   // width: '80%',
                   // height: '80%',
-                  marginTop: 10
+                  marginTop: 10,
                 }}
                 resizeMode="center"
               />
 
-              <View style={{ marginTop: 10, flexDirection: 'row', paddingBottom: 50 }}>
+              <View
+                style={{
+                  marginTop: 10,
+                  flexDirection: "row",
+                  paddingBottom: 50,
+                }}
+              >
                 <TouchableOpacity
                   style={[styles.button, { marginTop: 10 }]}
                   onPress={() => {
@@ -142,8 +160,9 @@ export default function App() {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.button, { marginTop: 10 }]}
-                  onPress={() => {
+                  onPress={async () => {
                     setModalView(false);
+                    await saveImage();
                   }}
                 >
                   <Text style={{ color: "white" }}>Подтвердить фото</Text>
