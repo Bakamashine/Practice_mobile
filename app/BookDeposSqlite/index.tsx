@@ -76,23 +76,6 @@ export default function BookDeposSqlite() {
                   ? { uri: item.image }
                   : require("@/datebase/default_image.jpg")
               }
-              // source={
-              //   (async () => {
-              //     try {
-              //       if (item.image === undefined) {
-              //         return require("@/datebase/default_image.jpg");
-              //       }
-              //       const result = await FileSystem.getInfoAsync(item.image);
-              //       return result.exists
-              //         ? { uri: item.image }
-              //         : require("@/datebase/default_image.jpg");
-              //     } catch (error) {
-              //       log.error("Ошибка при проверке изображения:", error);
-              //       return require("@/datebase/default_image.jpg");
-              //     }
-              //   })() as ImageSourcePropType
-              // }
-
               style={[
                 {
                   width: 100,
@@ -151,14 +134,7 @@ export default function BookDeposSqlite() {
                 router.push("/BookDeposSqlite/add");
               }}
             />
-            {/* <BookDeposButton
-                text="Сделать миграции"
-                func={async () => await sqlite.migrate()}
-              />
-              <BookDeposButton
-                text="Удалить таблицу с книгами"
-                func={async () => await sqlite.DropTable("books")}
-              /> */}
+
             <BookDeposButton
               text="Добавить книги"
               func={async () => {
@@ -173,6 +149,15 @@ export default function BookDeposSqlite() {
                 await sqlite.DeleteTable("books");
                 await fetchData();
               }}
+            />
+            <Text style={[styles.textCenter, {marginTop: 15}]}>Дальше будет работа с БД (аккуратно)</Text>
+            <BookDeposButton
+              text="Сделать миграции"
+              func={async () => await sqlite.migrate()}
+            />
+            <BookDeposButton
+              text="Удалить таблицу с книгами"
+              func={async () => await sqlite.DropTable("books")}
             />
           </View>
         }

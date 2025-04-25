@@ -148,7 +148,7 @@ function BookDepository() {
             </View>
           }
           ListFooterComponent={
-            <View style={styles.center}>
+          <View style={[styles.center, { paddingBottom: 40 }]}>
               <BookDeposButton
                 text="Создать новую книгу"
                 func={() => router.replace("/BookDepository/add")}
