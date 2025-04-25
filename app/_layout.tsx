@@ -38,6 +38,13 @@ function Layout() {
         />
 
         <Drawer.Screen
+          name="BookDepository/redact"
+          options={{
+            headerTitle: "Изменение даты",
+          }}
+        />
+
+        <Drawer.Screen
           name="BookDepository/[id]"
           options={{
             headerTitle: "Подробная информация книги",
