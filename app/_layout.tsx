@@ -4,10 +4,12 @@ import { Drawer } from "expo-router/drawer";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Stack } from "expo-router";
 import CustomDrawerComponents from "@/components/CustomDrawerComponents";
+import { StatusBar } from "react-native";
 
 function Layout() {
   return (
     <GestureHandlerRootView>
+      <StatusBar hidden={true} />
       <Drawer drawerContent={CustomDrawerComponents}>
         <Drawer.Screen
           name="index"
@@ -71,12 +73,12 @@ function Layout() {
             headerTitle: "Добавление книги (sqlite)",
           }}
         />
-        
+
         <Drawer.Screen
-        name="BookDeposSqlite/camera"
-        options={{
-            headerShown: false
-        }}
+          name="BookDeposSqlite/camera"
+          options={{
+            headerShown: false,
+          }}
         />
       </Drawer>
     </GestureHandlerRootView>

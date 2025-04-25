@@ -1,7 +1,17 @@
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Modal,
+  StatusBar
+} from "react-native";
 import { log } from "@/configs/logger";
+import * as basic_styles from "@/components/BookDepository/styles";
 
 /**
  * Выглядит паршиво
@@ -11,6 +21,7 @@ export default function App() {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [image, setImage] = useState<string | undefined>(undefined);
+  const [modalView, setModalView] = useState(false);
 
   const camera = useRef<CameraView | null>(null);
   /**
@@ -49,8 +60,16 @@ export default function App() {
    * Загрузка изображения в кеш, затем получение его и передача
    */
   async function getPicture() {
-    const photo = await camera.current?.takePictureAsync();
-    log.debug("photo: ", photo);
+    if (camera.current) {
+      const photo = await camera.current.takePictureAsync();
+      log.debug("Была сделана фотография: ", photo);
+      if (photo !== undefined) {
+        setImage(photo.uri);
+        setModalView(true);
+      }
+
+
+    }
   }
 
   return (
@@ -71,6 +90,56 @@ export default function App() {
           </TouchableOpacity>
         </View>
       </CameraView>
+
+      {image && (
+/*         <Image
+          source={{uri: image}}
+          style={StyleSheet.flatten([{
+            width: 100,
+            height: 100,
+            flex: 2
+          }, basic_styles.default.marginCenter])}
+        /> */
+      
+        
+          <Modal visible={modalView} animationType="slide">
+            <View style={basic_styles.default.modalOverlay}>
+              <View style={basic_styles.default.modalContent}>
+              <Text style={basic_styles.default.center}>Ваше фото: </Text>
+                <Image
+                  source={
+                    image
+                      ? { uri: image }
+                      : require("@/datebase/default_image.jpg")
+                  }
+                  // style={StyleSheet.flatten([
+                  //   add_style.ImageStyle2,
+                  //   styles.marginCenter,
+                  // ])}
+                
+                  style={{
+                    // width: 100,
+                    // height: 100,
+                    width: '80%',
+                    height: '90%',
+                    borderRadius: 5,
+
+                  }}
+                  resizeMode="cover"
+                />
+
+                <TouchableOpacity
+                  style={[styles.button, {marginTop: 10}]}
+                  onPress={() => {
+                    setModalView(false);
+                  }}
+                >
+                  <Text style={{color: 'white'}}>Назад</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+      )}
     </View>
   );
 }

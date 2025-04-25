@@ -68,13 +68,16 @@ export default function DetailBook() {
       }
     } catch (err) {
       log.error(err);
-      } finally {
-        setLoading(false);
-      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchData();
+    // (async () => {
+    //   await fetchData();
+    // })();
   }, [id]);
 
   if (loading) {
