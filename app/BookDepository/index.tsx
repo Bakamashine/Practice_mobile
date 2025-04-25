@@ -3,7 +3,7 @@
  * Я не знал что потом потребуется работа с sqlite, поэтому оставил это как есть
  */
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   View,
   Text,

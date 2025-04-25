@@ -12,7 +12,6 @@ import {
   RefreshControl,
   ActivityIndicator,
   Image,
-  ImageSourcePropType,
 } from "react-native";
 import BookDeposButton from "@/components/ui/BookDeposButton";
 import Books from "@/datebase/Books";
@@ -21,7 +20,6 @@ import { useFocusEffect } from "expo-router";
 import { BookDepository_styles } from "../BookDepository";
 import styles from "@/components/BookDepository/styles";
 import { books } from "@/datebase/Books";
-import * as FileSystem from "expo-file-system";
 
 export default function BookDeposSqlite() {
   const sqlite = new Books();

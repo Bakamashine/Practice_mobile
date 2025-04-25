@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef } from "react";
-import { useGlobalSearchParams, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useRef } from "react";
+import { useLocalSearchParams } from "expo-router";
 import {
   View,
   Text,

@@ -1,8 +1,6 @@
 import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Drawer } from "expo-router/drawer";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Stack } from "expo-router";
 import CustomDrawerComponents from "@/components/CustomDrawerComponents";
 import { StatusBar } from "react-native";
 

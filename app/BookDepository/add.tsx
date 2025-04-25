@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TextInput, StyleSheet, Text } from "react-native";
+import { View, TextInput, Text } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import styles from "@/components/BookDepository/styles";
 import BookDeposButton from "@/components/ui/BookDeposButton";
@@ -62,7 +62,9 @@ function add() {
         placeholder="Введите название книги."
         onChangeText={(value) => setName(value)}
       ></TextInput>
-      <Text style={styles.textCenter}>Выбранная дата: {date_to_day(date)} </Text>
+      <Text style={styles.textCenter}>
+        Выбранная дата: {date_to_day(date)}{" "}
+      </Text>
       <View style={[styles.center]}>
         <BookDeposButton
           text={`Добавить новую книгу`}

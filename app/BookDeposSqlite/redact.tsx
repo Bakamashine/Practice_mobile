@@ -1,21 +1,15 @@
 import React from "react";
-import { Button, View, Text, ActivityIndicator } from "react-native";
-import {
-  date_to_day,
-  getBookforId,
-  updateDate,
-} from "@/components/BookDepository/BookDepository.service";
+import { View, Text, ActivityIndicator } from "react-native";
+import { date_to_day } from "@/components/BookDepository/BookDepository.service";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { log } from "@/configs/logger";
 import { books } from "@/datebase/Books";
 import { useCallback } from "react";
 import BookDeposButton from "@/components/ui/BookDeposButton";
-import { router } from "expo-router";
 import {
   DateTimePickerAndroid,
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import BackButton from "@/components/BookDepository/BookDeposBackButton";
 import styles from "@/components/BookDepository/styles";
 import Books from "@/datebase/Books";
 import BookDeposSqliteBackButton from "@/components/BookDepository/BookDeposSqliteBackButton";
@@ -83,9 +77,9 @@ export default function redact() {
       },
       {
         one: "date",
-        two: date_to_day(currentDate),      
+        two: date_to_day(currentDate),
       },
-      "books",
+      "books"
     );
     currentDate !== undefined ? setDate(currentDate) : null;
   };

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, View, Text } from "react-native";
+import { View, Text } from "react-native";
 import {
   getBookforId,
   updateDate,
@@ -9,7 +9,6 @@ import { log } from "@/configs/logger";
 import { books } from ".";
 import { useCallback } from "react";
 import BookDeposButton from "@/components/ui/BookDeposButton";
-import { router } from "expo-router";
 import {
   DateTimePickerAndroid,
   DateTimePickerEvent,
