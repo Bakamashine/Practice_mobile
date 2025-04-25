@@ -9,16 +9,11 @@ export interface books {
   name: string;
   status: boolean;
   date: string;
-  image?: string|null;
+  image?: string | null;
 }
 class Books extends MainClass {
-  //   elements?: books;
-
   #table: string = "books";
-  //   constructor() {
-  //     super();
-  //     this.elements = elements;
-  //   }
+
   /**
    * Генерирует книги для БД
    * @param num Число генераций
@@ -40,7 +35,6 @@ class Books extends MainClass {
     }
   }
 
-
   /**
    * Получение всех книг из БД
    * @returns Все книги
@@ -58,7 +52,7 @@ class Books extends MainClass {
       log.error(err);
     }
   }
-  
+
   /**
    * Добавляет книгу
    * @param elements Передаваемые значения по интерфейсу books
@@ -66,16 +60,41 @@ class Books extends MainClass {
   async addBook(elements: books) {
     try {
       await this.connect();
-      // const result = await this._db?.runAsync(`
-      //       insert into ${this.#table} (name, date, status) values ('${
-      //   elements.name
-      // }', '${elements.date}', ${elements.status})
-      //       `);
-      
-      const result = await this._db?.runAsync(`
+      const result = await this._db?.runAsync(
+        `
         insert into ${this.#table} (name, date, status, image) values (?,?,?,?)
-        `, [elements.name, elements.date, elements.status, elements.image !== undefined && elements.image])
-      log.debug(result)
+        `,
+        [
+          elements.name,
+          elements.date,
+          elements.status,
+          elements.image !== undefined && elements.image,
+        ]
+      );
+      log.debug(result);
+    } catch (err) {
+      log.error(err);
+    }
+  }
+
+  /**
+   * Обновление записи в таблице books
+   * @param id ID записи которая будет обновляться
+   * @param param1 Объект с полем и новым значением
+   */
+  async updateForIdBooks(
+    id: number,
+    { row, value }: { row: string; value: string }
+  ) {
+    try {
+      await this.connect();
+      const result = await this._db?.runAsync(
+        `
+          update ${this.#table} set ${row} = ? where id = ?
+        `,
+        [value, id]
+      );
+      log.debug(`(BookDeposSqlite)(update) result: `, result);
     } catch (err) {
       log.error(err);
     }

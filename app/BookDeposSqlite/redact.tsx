@@ -1,5 +1,12 @@
-import React from "react";
-import { View, Text, ActivityIndicator } from "react-native";
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  TextInput,
+  Modal,
+  StyleSheet,
+} from "react-native";
 import { date_to_day } from "@/components/BookDepository/BookDepository.service";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { log } from "@/configs/logger";
@@ -33,6 +40,8 @@ export default function redact() {
    */
   const [date, setDate] = React.useState(new Date());
   const [loading, setLoading] = React.useState(true);
+  const [name, setName] = React.useState("");
+  const [modalView, setModalView] = React.useState(false);
 
   /**
    * Получение книги по id
@@ -49,6 +58,7 @@ export default function redact() {
       if (response !== undefined && response !== null) {
         const booksArray = response as books;
         setArray(booksArray);
+        setName(booksArray.name);
       }
     } catch (err) {
       log.error(err);
@@ -62,6 +72,12 @@ export default function redact() {
     }, [id, date])
   );
 
+  useEffect(() => {
+    setTimeout(() => {
+      setModalView(false);
+    }, 2000);
+  }, [modalView]);
+
   /**
    * Меняет дату
    * @param event Не используется, DateTimePickerAndroid сам передаёт аргумент
@@ -69,19 +85,22 @@ export default function redact() {
    */
   const onChange = async (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate;
-    // await updateDate(parseInt(id), currentDate as Date);
-    await book.updateRecord(
-      {
-        id: "id",
-        value: parseInt(id),
-      },
-      {
-        one: "date",
-        two: date_to_day(currentDate),
-      },
-      "books"
-    );
+
+    await book.updateForIdBooks(parseInt(id), {
+      row: "date",
+      value: date_to_day(currentDate),
+    });
     currentDate !== undefined ? setDate(currentDate) : null;
+  };
+
+  const updateName = async () => {
+    if (name !== undefined && name !== "") {
+      await book.updateForIdBooks(parseInt(id), {
+        row: "name",
+        value: name as string,
+      });
+      setModalView(true);
+    }
   };
 
   /**
@@ -107,7 +126,12 @@ export default function redact() {
 
   return (
     <View>
-      <Text style={styles.h1}>{array?.name}</Text>
+      <TextInput
+        style={styles.TextInput}
+        value={name}
+        onChangeText={(value) => setName(value)}
+        placeholder="Новое название"
+      />
       <Text style={styles.textCenter}>Дата добавления: {array?.date}</Text>
       <Text style={styles.textCenter}>
         Прочтена? {array?.status ? "Да" : "Нет"}
@@ -115,6 +139,17 @@ export default function redact() {
       <View style={styles.center}>
         <BookDeposSqliteBackButton />
         <BookDeposButton text="Изменить дату" func={showMode} />
+        <BookDeposButton text="Изменить название" func={updateName} />
+      </View>
+      {/* Модальное окно при попытке ответить на вопрос */}
+      <View>
+        <Modal visible={modalView} animationType="slide">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text>Название изменено</Text>
+            </View>
+          </View>
+        </Modal>
       </View>
     </View>
   );

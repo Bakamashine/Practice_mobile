@@ -98,7 +98,7 @@ export default function BookDeposSqlite() {
                 }}
               />
               <BookDeposButton
-                text="Изменить дату прочтения"
+                text="Изменить данные"
                 func={() =>
                   router.push({
                     pathname: "/BookDeposSqlite/redact",
