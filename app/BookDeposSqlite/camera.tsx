@@ -8,10 +8,12 @@ import {
   View,
   Image,
   Modal,
-  StatusBar
+  StatusBar,
 } from "react-native";
 import { log } from "@/configs/logger";
 import * as basic_styles from "@/components/BookDepository/styles";
+import * as MediaLibrary from "expo-media-library";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 /**
  * Выглядит паршиво
@@ -20,14 +22,17 @@ import * as basic_styles from "@/components/BookDepository/styles";
 export default function App() {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
+  const [permissionMediaLibrary, requestMediaLibrary] =
+    MediaLibrary.usePermissions();
   const [image, setImage] = useState<string | undefined>(undefined);
   const [modalView, setModalView] = useState(false);
 
   const camera = useRef<CameraView | null>(null);
+
   /**
    * Если разрешения нет, то не будет ничего показывать
    */
-  if (!permission) {
+  if (!permission || !permissionMediaLibrary) {
     return <View />;
   }
 
@@ -37,9 +42,18 @@ export default function App() {
    */
   if (!permission.granted) {
     return (
-      <View>
+      <View style={styles.permissions}>
         <Text>Вы должны дать разрешение на камеру</Text>
         <Button onPress={requestPermission} title="Повышение полномочий" />
+      </View>
+    );
+  }
+
+  if (!permissionMediaLibrary?.granted) {
+    return (
+      <View style={styles.permissions}>
+        <Text>Вы должны дать разрешение на использования галереи</Text>
+        <Button onPress={requestMediaLibrary} title="Повышение полномочий" />
       </View>
     );
   }
@@ -57,6 +71,11 @@ export default function App() {
   function stopCamera() {}
 
   /**
+   * Сохранение изображения
+   */
+  function saveImage() {}
+
+  /**
    * Загрузка изображения в кеш, затем получение его и передача
    */
   async function getPicture() {
@@ -67,8 +86,6 @@ export default function App() {
         setImage(photo.uri);
         setModalView(true);
       }
-
-
     }
   }
 
@@ -92,53 +109,49 @@ export default function App() {
       </CameraView>
 
       {image && (
-/*         <Image
-          source={{uri: image}}
-          style={StyleSheet.flatten([{
-            width: 100,
-            height: 100,
-            flex: 2
-          }, basic_styles.default.marginCenter])}
-        /> */
-      
-        
-          <Modal visible={modalView} animationType="slide">
-            <View style={basic_styles.default.modalOverlay}>
-              <View style={basic_styles.default.modalContent}>
+        <Modal visible={modalView} animationType="slide">
+          <View style={styles.modalOverlay}>
+            <SafeAreaView style={styles.modalContent}>
               <Text style={basic_styles.default.center}>Ваше фото: </Text>
-                <Image
-                  source={
-                    image
-                      ? { uri: image }
-                      : require("@/datebase/default_image.jpg")
-                  }
-                  // style={StyleSheet.flatten([
-                  //   add_style.ImageStyle2,
-                  //   styles.marginCenter,
-                  // ])}
-                
-                  style={{
-                    // width: 100,
-                    // height: 100,
-                    width: '80%',
-                    height: '90%',
-                    borderRadius: 5,
+              <Image
+                source={
+                  image
+                    ? { uri: image }
+                    : require("@/datebase/default_image.jpg")
+                }
+                style={{
+                  width: 200,
+                  height: 200,
+                  // borderRadius: 30,
+                  // width: '80%',
+                  // height: '80%',
+                  marginTop: 10
+                }}
+                resizeMode="center"
+              />
 
-                  }}
-                  resizeMode="cover"
-                />
-
+              <View style={{ marginTop: 10, flexDirection: 'row', paddingBottom: 50 }}>
                 <TouchableOpacity
-                  style={[styles.button, {marginTop: 10}]}
+                  style={[styles.button, { marginTop: 10 }]}
+                  onPress={() => {
+                    setModalView(false);
+                    setImage(undefined);
+                  }}
+                >
+                  <Text style={{ color: "white" }}>Отменить фото</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.button, { marginTop: 10 }]}
                   onPress={() => {
                     setModalView(false);
                   }}
                 >
-                  <Text style={{color: 'white'}}>Назад</Text>
+                  <Text style={{ color: "white" }}>Подтвердить фото</Text>
                 </TouchableOpacity>
               </View>
-            </View>
-          </Modal>
+            </SafeAreaView>
+          </View>
+        </Modal>
       )}
     </View>
   );
@@ -177,5 +190,29 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
     color: "white",
+  },
+  permissions: {
+    margin: 50,
+  },
+  modalContent: {
+    width: "100%",
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
