@@ -33,9 +33,9 @@ export default function BookDeposSqlite() {
   //   require("@/datebase/default_image.jpg")
   // );
 
-  const [imageSource, setImageSource] = React.useState<ImageSourcePropType>(
-    require("@/datebase/default_image.jpg")
-  );
+  // const [imageSource, setImageSource] = React.useState<ImageSourcePropType>(
+  //   require("@/datebase/default_image.jpg")
+  // );
 
   const fetchData = async () => {
     try {

@@ -23,7 +23,9 @@ import { log } from "@/configs/logger";
 
 function add() {
   const book = new Books();
-  const {new_img }= useLocalSearchParams<{new_img?: string, new_book?: string}>()
+  const { new_img } = useLocalSearchParams<{
+    new_img?: string;
+  }>();
   /**
    * Хранение выбранной даты
    * @default new Date()
@@ -41,7 +43,6 @@ function add() {
    * @default ''
    */
   const [name, setName] = React.useState("");
-
 
   /**
    * После фотографирования или добавления с галереи, сохраняется в image
@@ -77,8 +78,7 @@ function add() {
       is24Hour: true,
     });
   };
-  
-  
+
   function reset() {
     setImage(undefined);
     setName("");
@@ -86,13 +86,12 @@ function add() {
     setCheck(false);
   }
 
-
   useEffect(() => {
     if (new_img !== undefined && new_img !== null) {
-      setImage(new_img)
-      log.debug("(BookDeposSqlite)(add)(useEffect) setImage: ", new_img)
+      setImage(new_img);
+      log.debug("(BookDeposSqlite)(add)(useEffect) setImage: ", new_img);
     }
-  }, [new_img])
+  }, [new_img]);
 
   return (
     <View>
@@ -106,7 +105,7 @@ function add() {
           <View style={styles.center}>
             <BookDeposButton
               text="Добавить фото"
-              func={() => router.push("/BookDeposSqlite/camera")} 
+              func={() => router.push("/BookDeposSqlite/camera")}
             />
             <BookDeposButton text="Выбрать дату" func={showMode} />
 
@@ -129,7 +128,7 @@ function add() {
                 name,
                 date: date_to_day(date),
                 status: check,
-                image: image
+                image: image,
               });
               router.replace("/BookDeposSqlite");
             }}
