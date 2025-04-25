@@ -79,13 +79,6 @@ function add() {
     });
   };
 
-  function reset() {
-    setImage(undefined);
-    setName("");
-    setDate(new Date());
-    setCheck(false);
-  }
-
   useEffect(() => {
     if (new_img !== undefined && new_img !== null) {
       setImage(new_img);
